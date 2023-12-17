@@ -1,5 +1,9 @@
 # Zmija / Snake
 RP3 project
+## Upute za kloniranje repozitorija
+* u repozitoriju nema svih datoteka koje VS generira prilikom pokretanja programa nego samo one bitne za *build*
+* nakon kloniranja i otvaranja 'Zmijica.sln' trebao bi funkcionirati build projekta
+* kod push i pull naredbi se automatski preskaću datoteke opisane u '.gitignore' 
 # Specification
 
 ## Original text 
@@ -19,12 +23,22 @@ Na nekoj od viših razina možete ubaciti i drugu zmiju kojom upravlja računalo
 Također neka je moguće dobiti i određen broj pauza u igri. Možete odrediti i broj života koje zmija može potrošiti u igri.
 
 ## Basic Look
-![basic_look](Snake_basic_look.jpg)
+![basic_look](assets/Snake_basic_look.jpg)
+* graphics for the prototype will be mostly rectangles filled with different colors
+* purple represents the walls
+* dark green is the snake's head
+* lightgreen is the rest of the snake
+* red, orange and gray are the foods - more detail in [Foods](#foods)
 ## Controls
 ## Win conditions
 ## Loose conditions
 ## Foods
+## Menu
+### Settings window
+### Info window
 
 # Implementation
+## General notes
+### Game loop
 ## Model
 ## View
