@@ -40,5 +40,15 @@ Također neka je moguće dobiti i određen broj pauza u igri. Možete odrediti i
 # Implementation
 ## General notes
 ### Game loop
+Class hierarchy `Form > GameForm > Game` is made to ensure code sustainability. `Game` focuses on methods:
+* `Setup` : called on Form.Load event
+* `Draw` : called on Application.Idle event
+* `[InputEventHandler]` : called on input event
+
+`GameForm` is also an **abstract** class because of mentioned abstract methods implemented in the `Game` class objects.
 ## Model
+### Field
+### `SnakeProto`
+### `Snake`
 ## View
+### `IDrawable`
