@@ -1,12 +1,28 @@
-# Zmija / Snake
+# Zmija 
 RP3 project
+# BITNO
 ## Upute za kloniranje repozitorija
 * u repozitoriju nema svih datoteka koje VS generira prilikom pokretanja programa nego samo one bitne za *build*
 * nakon kloniranja i otvaranja 'Zmijica.sln' trebao bi funkcionirati build projekta
-* kod push i pull naredbi se automatski preskaću datoteke opisane u '.gitignore' 
-# Specification
+* kod push i pull naredbi se automatski preskaću datoteke opisane u '.gitignore'
 
-## Original text 
+## Izrada dokumentacije
+Kako bi generiranje dokumentacije što bolje teklo treba pogledati [XML tags](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags#general-tags).
+Iznad elemenata koda (članova, klasa, metoda, funkcija) koji se dokumentiraju stavlja se blok komentara kao u primjeru:
+```
+/// <summary>
+/// Standardna funkcija kod programiranja igara.
+/// Poziva se kod Load eventa forme. 
+/// </summary>
+public abstract void Setup();
+```
+Istražio sam kako pomoću [Doxygen](https://www.doxygen.nl/index.html) generirati dokumentaciju iz *dobro komentiranog* koda.
+Ideja je uz minimalne modifikacije koristiti XML tagove i ovaj README.md za generiranje dokumentacije/prezentacije za predaju projekta. 
+*Markdown* se koristi i za *Jupyter* bilježnice, ali evo [podsjetnik](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax). Inicjalni rezultat isprobavanja Doxygen-a je u docs direktoriju. Datoteka s ekstenzijom .rtf se može otvoriti pomoću Word-a. Jedini problem je encoding za dijakritičke znakove u hrv. jeziku. Može se s find-replace popraviti.
+
+# Specifikacija
+
+## Originalni tekst
 Igra bi se trebala sastojati od više razina različite težine. Cilj svake razine je npr. dostići određenu duljinu zmije ili neki broj bodova. 
 
 Razine se mogu razlikovati po brzini kretanja zmije, zatim možete dodati neke dodatne prepreke s kojima se zmija ne smije sudariti, možete mijenjati i oblik prostora unutar kojeg se zmija kreće. 
@@ -22,24 +38,26 @@ Na nekoj od viših razina možete ubaciti i drugu zmiju kojom upravlja računalo
 
 Također neka je moguće dobiti i određen broj pauza u igri. Možete odrediti i broj života koje zmija može potrošiti u igri.
 
-## Basic Look
+## Bazični izgled
 ![basic_look](assets/Snake_basic_look.jpg)
-* graphics for the prototype will be mostly rectangles filled with different colors
-* purple represents the walls
-* dark green is the snake's head
-* lightgreen is the rest of the snake
-* red, orange and gray are the foods - more detail in [Foods](#foods)
-## Controls
+* uglavnom će se koristiti pravokutnici od `TableLayoutPanel` kontrole
+* ljubičasto na slici su zidovi
+* tamnozelena je glava zmije
+* svijetlozelena je tijelo zmije
+* šareni pravokutnici su jestivi objekti - vidi [Hrana](#hrana)
+## Kontrole
 ## Win conditions
 ## Loose conditions
-## Foods
-## Menu
-### Settings window
+## Hrana
+## Game Menu
+### Postavke window
 ### Info window
 
-# Implementation
-## General notes
+# Implementacija
+## Generalno
 ### Game loop
+treba prevesti : 
+
 Class hierarchy `Form > GameForm > Game` is made to ensure code sustainability. `Game` focuses on methods:
 * `Setup` : called on Form.Load event
 * `Draw` : called on Application.Idle event
@@ -47,7 +65,7 @@ Class hierarchy `Form > GameForm > Game` is made to ensure code sustainability. 
 
 `GameForm` is also an **abstract** class because of mentioned abstract methods implemented in the `Game` class objects.
 ## Model
-### Field
+### Polje
 ### `SnakeProto`
 ### `Snake`
 ## View
