@@ -137,6 +137,17 @@ namespace Zmijica
             ResumeLayout();
         }
 
+        protected void ClearScreen()
+        {
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    screen.GetControlFromPosition(i, j).BackColor = Color.Black;
+                }
+            }
+        }
+
         /// <summary>
         /// Crta listu točaka (int,int) i crta ih u boji color
         /// </summary>

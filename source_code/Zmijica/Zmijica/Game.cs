@@ -16,17 +16,23 @@ namespace Zmijica
         /// </summary>
         public Game() : base() { }
 
+        /*
+        U testnom primjeru zmija kreće s (1,1) i kreće se u desno. Ako izađe izvan ekrana se program ruši zbog
+        exceptiona. Postavljanjem FPS se mijenja brzina. Strelicama na tipkovnici se kontrolira smjer kretanja.
+        */
+
         // test data
         SnakeProto snake;   // testna zmijica
-        List<Point> pts = new List<Point>();
+        Point direction = new Point(1,0);    // testne kontrole
+        List<Point> pts = new List<Point>();    // sadrži koordinate zida
 
         string[] wallString = new string[] {
             "##########",
             "#........#",
             "#........#",
             "#........#",
-            "#...#....#",
-            "#...#....#",
+            "#........#",
+            "#........#",
             "#........#",
             "#........#",
             "#........#",
@@ -36,11 +42,12 @@ namespace Zmijica
         public override void Setup() 
         {
             InitializeScreen(10);   // za rezoluciju ekrana
-            FPS = 1;    // postavljanje osvježavanja
+            FPS = 5;    // postavljanje osvježavanja
 
-            snake = new SnakeProto(this, 5, 5); // nova zmijica na (5,5)
+            snake = new SnakeProto(this, 1, 1); // nova zmijica na (5,5)
+            DrawList(snake.pos(), Color.Green); // inicijalno crtanje zmije
 
-            // crtanje testnog zida
+            // dekodiranje testnog zida
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < width; j++)
@@ -49,19 +56,45 @@ namespace Zmijica
                 }
             }
             DrawList(pts, Color.Purple);  // crta točke iz pts
-            
         }
 
         public override void Draw() 
         {
+            // resetiranje pozadine
+            ClearScreen();
+            DrawList(pts, Color.Purple);  // crta točke iz pts
+
             // crtanje zmije
-            snake.update();
-            DrawList(snake.draw(), Color.Green);
+            snake.update(direction);    // kontrola zmije
+            DrawList(snake.pos(), Color.Green);
         }
 
         public override void KeyPressed() 
         {
+            switch (KeyCode)
+            {
+                case Keys.Up:
+                    direction.Y = -1;
+                    direction.X = 0;
+                    break;
 
+                case Keys.Down:
+                    direction.Y = 1;
+                    direction.X = 0;
+                    break;
+
+                case Keys.Left:
+                    direction.Y = 0;
+                    direction.X = -1;
+                    break;
+
+                case Keys.Right:
+                    direction.Y = 0;
+                    direction.X = 1;
+                    break;
+            }
+
+            
         }
     }
 }

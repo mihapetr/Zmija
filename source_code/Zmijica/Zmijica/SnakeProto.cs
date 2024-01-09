@@ -19,14 +19,15 @@ namespace Zmijica
             position = new Point(x, y);
         }
 
-        public List<Point> draw()
+        public List<Point> pos()
         {
             return new List<Point>() { position };
         }
 
-        public void update()
+        public void update(Point dir)
         {
-            position.X += 1;
+            position.X += dir.X;
+            position.Y += dir.Y;
         }
     }
 }
