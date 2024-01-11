@@ -27,7 +27,7 @@ namespace Zmijica
         public Snake(int x = 3, int y = 3)
         {
             position = new List<Point>();
-            position.Insert(0, new Point(x, y-1));
+            //position.Insert(0, new Point(x, y-1));
             position.Insert(0, new Point(x, y));
             direction = new Point(0, 0);
         }
