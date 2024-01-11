@@ -33,11 +33,6 @@ namespace Zmijica
             foodPosition.Insert(0, newFood);
         }
 
-        /*
-        U testnom primjeru zmija kreće s (1,1) i kreće se u desno. Ako izađe izvan ekrana se program ruši zbog
-        exceptiona. Postavljanjem FPS se mijenja brzina. Strelicama na tipkovnici se kontrolira smjer kretanja.
-        */
-
         // test data
         Snake snake;   // testna zmijica
         List<Tuple<Point, Food>> foodPosition;
@@ -65,7 +60,7 @@ namespace Zmijica
             InitializeScreen(varijable.width);   // za rezoluciju ekrana
             FPS = varijable.FPS;    // postavljanje osvježavanja
 
-            snake = new Snake(varijable.width); // nova zmijica na (5,5)
+            snake = new Snake(varijable.width); // nova zmijica na (3,3) //TODO ovo treba ovisiti o vrsti levela
             DrawList(snake.getPosition(), Color.Green); // inicijalno crtanje zmije
 
             // dekodiranje testnog zida
