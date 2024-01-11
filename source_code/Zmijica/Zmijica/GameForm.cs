@@ -51,8 +51,8 @@ namespace Zmijica
         
         protected Graphics graphics;
         protected TableLayoutPanel screen;
-        protected int width;
-        public Varijable varijable;
+        protected int width;    // duplicated in varijable
+        public Varijable varijable;     // contains game variables
 
         protected int FPS
         {
@@ -108,10 +108,10 @@ namespace Zmijica
             screen = new System.Windows.Forms.TableLayoutPanel();
             screen.ColumnCount = width;
             screen.RowCount = width;
-            screen.Dock = System.Windows.Forms.DockStyle.Fill;
+            //screen.Dock = System.Windows.Forms.DockStyle.Fill;
             screen.Location = new System.Drawing.Point(0, 0);
             screen.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            screen.Size = new System.Drawing.Size(704, 681);
+            screen.Size = new System.Drawing.Size(600, 580);
             for (int i = 0; i < width; i++)
             {
                 screen.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100/width));

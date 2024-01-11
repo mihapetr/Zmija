@@ -12,6 +12,9 @@ namespace Zmijica
     public class Varijable
     {
         public int width;
+        public bool snakeAlive;
+        public int score;
+        public int poisonInterval;
     }
 
     internal class Game : GameForm
@@ -55,7 +58,8 @@ namespace Zmijica
 
         public override void Setup() 
         {
-            Console.WriteLine(varijable.width);
+            varijable.poisonInterval = 5;
+
             InitializeScreen(10);   // za rezoluciju ekrana
             FPS = 2;    // postavljanje osvježavanja
 
