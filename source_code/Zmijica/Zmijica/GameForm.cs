@@ -52,6 +52,7 @@ namespace Zmijica
         protected Graphics graphics;
         protected TableLayoutPanel screen;
         protected int width;
+        public Varijable varijable;
 
         protected int FPS
         {
@@ -67,6 +68,7 @@ namespace Zmijica
             graphics = CreateGraphics();
             // Application.Idle += HandleIdle;
             timer1.Start();
+            varijable = new Varijable();
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -100,6 +102,7 @@ namespace Zmijica
         protected void InitializeScreen(int width)
         {
             this.width = width;
+            varijable.width = width;
             int height = width;
             SuspendLayout();
             screen = new System.Windows.Forms.TableLayoutPanel();

@@ -8,6 +8,12 @@ using System.Windows.Forms;
 
 namespace Zmijica
 {
+
+    public class Varijable
+    {
+        public int width;
+    }
+
     internal class Game : GameForm
     { 
         /// <summary>
@@ -49,6 +55,7 @@ namespace Zmijica
 
         public override void Setup() 
         {
+            Console.WriteLine(varijable.width);
             InitializeScreen(10);   // za rezoluciju ekrana
             FPS = 2;    // postavljanje osvježavanja
 
