@@ -37,8 +37,9 @@ namespace Zmijica
         Snake snake;   // testna zmijica
         List<Tuple<Point, Food>> foodPosition;
         Point direction = new Point(0,0);    // testne kontrole //!mislim da ne treba(init smjer zmijice na 0,0)
-        List<Point> pts = new List<Point>();    // sadrži koordinate zida
+        List<Point> walls = new List<Point>();    // sadrži koordinate zida
         int timestamp;
+        Random r = new Random();
 
         string[] wallString = new string[] {
             "##########",
@@ -67,16 +68,16 @@ namespace Zmijica
             {
                 for (int j = 0; j < width; j++)
                 {
-                    if(wallString[j][i] == '#') pts.Add(new Point(i, j));
+                    if(wallString[j][i] == '#') walls.Add(new Point(i, j));
                 }
             }
-            DrawList(pts, Color.Purple);  // crta točke iz pts
+            DrawList(walls, Color.Purple);  // crta točke iz walls
         }
 
         //nez jel ovo treba bit neki override
         private void updateGame()
         {
-            //TODO: generiraj hranu(dok nije u koliziji sa zmijom ili nekom hranom koja postoji)
+            timestamp++;
 
             //gdje ce se pomaknut u sljedecem otkucaju
             Point headPosition = snake.headPosition();
@@ -118,6 +119,53 @@ namespace Zmijica
             {
                 snake.update(direction);    // kontrola zmije
             }
+
+            //generiraj otrov(ne smije bit u koliziji sa zidom, sa zmijom ili s drugim hranama
+            //TODO poisonInterval bolje nego 5
+            if (timestamp % 5 == 0)
+            {
+                //generiraj dok se ne nade dozvoljena pozicija
+                while (true)
+                {
+                    bool isLegalPosition = true;
+                    Point newPoison = new Point(r.Next(0, varijable.width - 1), r.Next(0, varijable.width - 1));
+                    //kolizija sa zmijom?
+                    foreach (Point snakeBody in snakePosition.ToList())
+                    {
+                        if (snakeBody == newPoison)
+                        {
+                            isLegalPosition = false;
+                        }
+                    }
+                    if (headPosition == newPoison) isLegalPosition = false;
+
+                    //kolizija sa hranom?
+                    foreach (Tuple<Point, Food> food in foodPosition.ToList())
+                    {
+                        if (food.Item1 == newPoison)
+                        {
+                            isLegalPosition = false;
+                            break;
+                        }
+                    }
+
+                    //kolizija sa zidom?
+                    foreach (Point wall in walls.ToList())
+                    {
+                        if (wall == newPoison)
+                        {
+                            isLegalPosition = false;
+                        }
+                    }
+
+                    if (isLegalPosition)
+                    {
+                        Tuple <Point, Food> newFood = new Tuple<Point, Food>(newPoison, Food.poison);
+                        foodPosition.Insert(0, newFood);
+                        break;
+                    }
+                }
+            }
         }
 
         public override void Draw() 
@@ -126,16 +174,23 @@ namespace Zmijica
 
             // resetiranje pozadine
             ClearScreen();
-            DrawList(pts, Color.Purple);  // crta točke iz pts
+            DrawList(walls, Color.Purple);  // crta točke iz walls
 
             updateGame();
-            //TODO mora se nacrtat svaka vrsta hrane pojedinacno
+            // nacrtaj standardFood
             List<Point> standardFood = new List<Point>();
             foreach(Tuple<Point,Food> food in foodPosition)
             {
                 if(food.Item2 == Food.standard) standardFood.Insert(0, food.Item1);
             }
-            DrawList(standardFood, Color.Red);
+            //DrawList(standardFood, Color.Yellow);
+            // nacrtaj poisonFood
+            List<Point> poisonFood = new List<Point>();
+            foreach (Tuple<Point, Food> food in foodPosition)
+            {
+                if (food.Item2 == Food.poison) poisonFood.Insert(0, food.Item1);
+            }
+            DrawList(poisonFood, Color.Red);
 
             DrawList(snake.getPosition(), Color.Green);
         }

@@ -9,6 +9,7 @@ namespace Zmijica
     enum Food
     {
         standard,
+        poison,
         noFood
     }
 }
