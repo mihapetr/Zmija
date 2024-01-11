@@ -78,10 +78,30 @@ namespace Zmijica
         {
             //TODO: generiraj hranu(dok nije u koliziji sa zmijom ili nekom hranom koja postoji)
 
-            //provjeri je li zmija u koliziji s hranom
+            //gdje ce se pomaknut u sljedecem otkucaju
             Point headPosition = snake.headPosition();
             headPosition.X += direction.X;
             headPosition.Y += direction.Y;
+
+            //provjeri je li zmija u koliziji sama sa sobom
+            bool isDead = false;
+            List<Point> snakePosition = snake.getPosition();
+            foreach (Point snakeBody in snakePosition.ToList())
+            {
+                if (snakeBody == headPosition)
+                {
+                    isDead = true;
+                }
+            }
+            if (isDead == true)
+            {
+                //TODO zavrsi igru 
+                direction.X = 0;
+                direction.Y = 0;
+            }
+
+
+            //provjeri je li zmija u koliziji s hranom
             bool hasEaten = false;
             foreach (Tuple<Point, Food> food in foodPosition.ToList())
             {
@@ -93,13 +113,10 @@ namespace Zmijica
                 }
             }
 
-
-
             // crtanje zmije
             if (!hasEaten)
             {
                 snake.update(direction);    // kontrola zmije
-                //foodPosition.RemoveAll(item => item.Item1 == headPosition);
             }
         }
 
