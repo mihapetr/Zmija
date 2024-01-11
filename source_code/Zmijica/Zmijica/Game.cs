@@ -74,6 +74,42 @@ namespace Zmijica
             DrawList(walls, Color.Purple);  // crta točke iz walls
         }
 
+        private bool isLegalFoodPosition(Point position, Point headPosition, List<Point> snakePosition)
+        {
+            bool isLegalPosition = true;
+            //kolizija sa zmijom?
+            foreach (Point snakeBody in snakePosition.ToList())
+            {
+                if (snakeBody == position)
+                {
+                    isLegalPosition = false;
+                }
+            }
+            if (headPosition == position) isLegalPosition = false;
+
+            //kolizija sa hranom?
+            foreach (Tuple<Point, Food> food in foodPosition.ToList())
+            {
+                if (food.Item1 == position)
+                {
+                    isLegalPosition = false;
+                    break;
+                }
+            }
+
+            //kolizija sa zidom?
+            foreach (Point wall in walls.ToList())
+            {
+                if (wall == position)
+                {
+                    isLegalPosition = false;
+                }
+            }
+
+            if (isLegalPosition) return true;
+            else return false;
+        }
+
         //nez jel ovo treba bit neki override
         private void updateGame()
         {
@@ -111,6 +147,7 @@ namespace Zmijica
                     snake.update(direction, food.Item2);
                     foodPosition.Remove(food);
                     hasEaten = true;
+                    //TODO stvori hranu
                 }
             }
 
@@ -127,40 +164,10 @@ namespace Zmijica
                 //generiraj dok se ne nade dozvoljena pozicija
                 while (true)
                 {
-                    bool isLegalPosition = true;
-                    Point newPoison = new Point(r.Next(0, varijable.width - 1), r.Next(0, varijable.width - 1));
-                    //kolizija sa zmijom?
-                    foreach (Point snakeBody in snakePosition.ToList())
+                    Point position = new Point(r.Next(0, varijable.width - 1), r.Next(0, varijable.width - 1));
+                    if (isLegalFoodPosition(position, headPosition, snakePosition))
                     {
-                        if (snakeBody == newPoison)
-                        {
-                            isLegalPosition = false;
-                        }
-                    }
-                    if (headPosition == newPoison) isLegalPosition = false;
-
-                    //kolizija sa hranom?
-                    foreach (Tuple<Point, Food> food in foodPosition.ToList())
-                    {
-                        if (food.Item1 == newPoison)
-                        {
-                            isLegalPosition = false;
-                            break;
-                        }
-                    }
-
-                    //kolizija sa zidom?
-                    foreach (Point wall in walls.ToList())
-                    {
-                        if (wall == newPoison)
-                        {
-                            isLegalPosition = false;
-                        }
-                    }
-
-                    if (isLegalPosition)
-                    {
-                        Tuple <Point, Food> newFood = new Tuple<Point, Food>(newPoison, Food.poison);
+                        Tuple<Point, Food> newFood = new Tuple<Point, Food>(position, Food.poison);
                         foodPosition.Insert(0, newFood);
                         break;
                     }
