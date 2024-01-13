@@ -39,6 +39,7 @@ namespace Zmijica
             this.labelLength = new System.Windows.Forms.Label();
             this.labelLevel = new System.Windows.Forms.Label();
             this.labelStage = new System.Windows.Forms.Label();
+            this.screenContainer = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -100,22 +101,34 @@ namespace Zmijica
             this.labelLevel.AutoSize = true;
             this.labelLevel.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.labelLevel.ForeColor = System.Drawing.SystemColors.Control;
-            this.labelLevel.Location = new System.Drawing.Point(445, 608);
+            this.labelLevel.Location = new System.Drawing.Point(423, 608);
             this.labelLevel.Name = "labelLevel";
-            this.labelLevel.Size = new System.Drawing.Size(139, 31);
+            this.labelLevel.Size = new System.Drawing.Size(154, 31);
             this.labelLevel.TabIndex = 2;
-            this.labelLevel.Text = "Level: 001";
+            this.labelLevel.Text = "Level: 0001";
             // 
             // labelStage
             // 
             this.labelStage.AutoSize = true;
             this.labelStage.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.labelStage.ForeColor = System.Drawing.SystemColors.Control;
-            this.labelStage.Location = new System.Drawing.Point(444, 641);
+            this.labelStage.Location = new System.Drawing.Point(462, 641);
             this.labelStage.Name = "labelStage";
             this.labelStage.Size = new System.Drawing.Size(115, 31);
             this.labelStage.TabIndex = 3;
             this.labelStage.Text = "Stage: 1";
+            // 
+            // screenContainer
+            // 
+            this.screenContainer.AutoSize = true;
+            this.screenContainer.ColumnCount = 1;
+            this.screenContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.screenContainer.Location = new System.Drawing.Point(122, 50);
+            this.screenContainer.Name = "screenContainer";
+            this.screenContainer.RowCount = 1;
+            this.screenContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.screenContainer.Size = new System.Drawing.Size(600, 720);
+            this.screenContainer.TabIndex = 4;
             // 
             // GameForm
             // 
@@ -133,7 +146,7 @@ namespace Zmijica
             this.MinimizeBox = false;
             this.Name = "GameForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form2";
+            this.Text = "Zmijica";
             this.Load += new System.EventHandler(this.Form2_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GameForm_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.GameForm_KeyUp);
@@ -148,9 +161,10 @@ namespace Zmijica
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;    // korstio se samo kao uzor za dinamičku kreaciju
         private Panel panel1;   // korstio se samo kao uzor za dinamičku kreaciju
         protected Timer timer1; // za kontrolu FPS-a igrice
-        private Label labelScore;
-        private Label labelLength;
-        private Label labelLevel;
-        private Label labelStage;
+        protected Label labelScore;
+        protected Label labelLength;
+        protected Label labelLevel;
+        protected Label labelStage;
+        protected TableLayoutPanel screenContainer;
     }
 }

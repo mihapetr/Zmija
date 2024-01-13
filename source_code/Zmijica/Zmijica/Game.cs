@@ -9,69 +9,201 @@ using System.Windows.Forms;
 namespace Zmijica
 {
 
+    /// <summary>
+    /// Meta varijable. Svaka instanca Game ima svoju instancu.
+    /// </summary>
     public class Varijable
     {
+        // tehnički detalji
         public int width = 10;
         public bool snakeAlive = true;
-        public int score;
+
+        // težina igre
+        public int goalLength = 3;
         public int poisonInterval = 20;
         public int poisonDamage = 3;
-        public int FPS = 2;
+        public int FPS = 5;
+
+        // score screen
+        public int score = 553;
+        public int stage = 1;
+        public int level = 1;
     }
 
     internal class Game : GameForm
-    { 
+    {
+        #region Konstruktor 
+
         /// <summary>
         /// Kako bismo osigurali funkcionalnost forme, na početku se 
         /// poziva <see cref="GameForm.GameForm"/>.
         /// </summary>
-        public Game() : base() 
-        {
-            timestamp = 0;
-            foodPosition = new List<Tuple<Point, Food>>();
-            Tuple<Point, Food> newFood = new Tuple <Point, Food>(new Point(7, 7), Food.standard);
-            foodPosition.Insert(0, newFood);
-        }
+        public Game() : base() {}   // ovdje se ništa ne upisuje
 
-        // test data
-        Snake snake;   // testna zmijica
+        #endregion
+
+        // ---------------------------- VARIJABLE -------------------------------
+
+        List<Point> walls = new List<Point>();    // sadrži koordinate zida
+        Stage[] stage = new Stage[4];
+
+        Snake snake;
         List<Tuple<Point, Food>> foodPosition;
         Point direction = new Point(0,0);    // testne kontrole //!mislim da ne treba(init smjer zmijice na 0,0)
         Point newDirection = new Point(0, 0);    // testne kontrole //!mislim da ne treba(init smjer zmijice na 0,0)
-        List<Point> walls = new List<Point>();    // sadrži koordinate zida
-        int timestamp;
+        Tuple<Point, Food> newFood;
+        ulong timestamp;
         Random r = new Random();
 
-        string[] wallString = new string[] {
-            "####..####",
-            "#........#",
-            "#........#",
-            "#........#",
-            "..........",
-            "..........",
-            "#........#",
-            "#........#",
-            "#........#",
-            "####..####"
-        };
+        // -------------------------- TESTNE VARIJABLE ---------------------------
+        // ovamo stvari koje se testiraju
+
+
+
+        // ----------------------- Setup, Draw, KeyPressed ----------------------------------
 
         public override void Setup() 
         {
-            InitializeScreen(varijable.width);   // za rezoluciju ekrana
+            // inicijalizacija svih polja za igru
+            // tako osiguravamo brzi prelazak
+            stage[3] = new Stage(3);
+            GetScreen(stage[3].width);   // za rezoluciju ekrana
+
+            stage[2] = new Stage(2);
+            GetScreen(stage[2].width);
+
+            stage[1] = new Stage(1);
+            GetScreen(stage[1].width);
+
+            // food processing
+            timestamp = 0;
+            foodPosition = new List<Tuple<Point, Food>>();
+            newFood = new Tuple<Point, Food>(new Point(7, 7), Food.standard);
+            foodPosition.Insert(0, newFood);
+
             FPS = varijable.FPS;    // postavljanje osvježavanja
 
             snake = new Snake(varijable.width); // nova zmijica na (3,3) //TODO ovo treba ovisiti o vrsti levela
             DrawList(snake.getPosition(), Color.Green); // inicijalno crtanje zmije
 
-            // dekodiranje testnog zida
-            for (int i = 0; i < width; i++)
-            {
-                for (int j = 0; j < width; j++)
-                {
-                    if(wallString[j][i] == '#') walls.Add(new Point(i, j));
-                }
-            }
+            walls = stage[1].getWalls();
             DrawList(walls, Color.Purple);  // crta točke iz walls
+        }
+
+        public override void Draw()
+        {
+            // resetiranje pozadine
+            ClearScreen();
+            DrawList(walls, Color.Purple);  // crta točke iz walls
+
+            updateGame();   // računi za frame
+
+            // nacrtaj standardFood
+            List<Point> standardFood = new List<Point>();
+            foreach (Tuple<Point, Food> food in foodPosition)
+            {
+                if (food.Item2 == Food.standard) standardFood.Insert(0, food.Item1);
+            }
+            DrawList(standardFood, Color.Yellow);
+
+            // nacrtaj poisonFood
+            List<Point> poisonFood = new List<Point>();
+            foreach (Tuple<Point, Food> food in foodPosition)
+            {
+                if (food.Item2 == Food.poison) poisonFood.Insert(0, food.Item1);
+            }
+            DrawList(poisonFood, Color.Red);
+
+            // crtanje zmije
+            DrawList(snake.getPosition(), Color.Green);
+
+            // crtanje ploče s bodovima
+            labelLength.Text = $"Length: {snake.Length} / {varijable.goalLength}";
+            labelScore.Text = $"Score: {varijable.score.ToString("00000000")}";
+            labelStage.Text = $"Stage: {varijable.stage}";
+            labelLevel.Text = $"Level: {varijable.level.ToString("0000")}";
+
+            // provjera prelaska na novi stage
+            if (varijable.goalLength == snake.Length) LevelUp();
+            if (varijable.snakeAlive == false)
+            {
+                timer1.Stop();
+
+            }
+        }
+
+        public override void KeyPressed()
+        {
+            switch (KeyCode)
+            {
+                case Keys.W:
+                case Keys.Up:
+                    if (direction.Y == 1 && direction.X == 0) break;
+                    newDirection.Y = -1;
+                    newDirection.X = 0;
+                    break;
+
+                case Keys.S:
+                case Keys.Down:
+                    if (direction.Y == -1 && direction.X == 0) break;
+                    newDirection.Y = 1;
+                    newDirection.X = 0;
+                    break;
+
+                case Keys.A:
+                case Keys.Left:
+                    if (direction.Y == 0 && direction.X == 1) break;
+                    newDirection.Y = 0;
+                    newDirection.X = -1;
+                    break;
+
+                case Keys.D:
+                case Keys.Right:
+                    if (direction.Y == 0 && direction.X == -1) break;
+                    newDirection.Y = 0;
+                    newDirection.X = 1;
+                    break;
+            }
+        }
+
+        // ------------------- POMOĆNE FUNKCIJE --------------------------------
+
+        void LevelUp()
+        {
+            timestamp = 0;
+
+            varijable.stage += 1;
+            if (varijable.stage == 4)
+            {
+                varijable.stage = 1;
+                varijable.level += 1;
+
+                // otežanje igre
+                FPS = varijable.FPS + 1;
+                varijable.poisonDamage += 1; 
+            }
+            // otežanje igre
+            varijable.goalLength += 1;
+
+            stage[varijable.stage] = new Stage(varijable.stage);
+            GetScreen(stage[varijable.stage].width);
+
+            snake = new Snake(varijable.width); // nova zmijica na (3,3) //TODO ovo treba ovisiti o vrsti levela
+            DrawList(snake.getPosition(), Color.Green); // inicijalno crtanje zmije
+
+            walls = stage[varijable.stage].getWalls();
+            DrawList(walls, Color.Purple);  // crta točke iz walls
+
+            direction = new Point(0, 0); // reset kontrola
+            newDirection = new Point(0, 0);
+
+            // food processing
+            timestamp = 0;
+            foodPosition = new List<Tuple<Point, Food>>();
+            newFood = new Tuple<Point, Food>(new Point(7, 7), Food.standard);
+            foodPosition.Insert(0, newFood);
+
+            FPS = varijable.FPS;    // postavljanje osvježavanja
         }
 
         private bool isLegalFoodPosition(Point position, Point headPosition, List<Point> snakePosition)
@@ -195,74 +327,16 @@ namespace Zmijica
                 }
             }
 
-            // crtanje zmije
             if (!hasEaten)
             {
                 snake.update(direction);    // kontrola zmije
             }
 
             //generiraj otrov(ne smije bit u koliziji sa zidom, sa zmijom ili s drugim hranama
-            if (timestamp > 0 && varijable.snakeAlive && timestamp % varijable.poisonInterval == 0)
+            if (timestamp > 0 && varijable.snakeAlive && timestamp % (ulong)varijable.poisonInterval == 0)
             {
                 newPoisonFood(headPosition, snakePosition);
             }
-        }
-
-        public override void Draw() 
-        {
-            // resetiranje pozadine
-            ClearScreen();
-            DrawList(walls, Color.Purple);  // crta točke iz walls
-
-            updateGame();
-            // nacrtaj standardFood
-            List<Point> standardFood = new List<Point>();
-            foreach(Tuple<Point,Food> food in foodPosition)
-            {
-                if(food.Item2 == Food.standard) standardFood.Insert(0, food.Item1);
-            }
-            DrawList(standardFood, Color.Yellow);
-            // nacrtaj poisonFood
-            List<Point> poisonFood = new List<Point>();
-            foreach (Tuple<Point, Food> food in foodPosition)
-            {
-                if (food.Item2 == Food.poison) poisonFood.Insert(0, food.Item1);
-            }
-            DrawList(poisonFood, Color.Red);
-
-            DrawList(snake.getPosition(), Color.Green);
-        }
-
-        public override void KeyPressed() 
-        {
-            switch (KeyCode)
-            {
-                case Keys.Up:
-                    if (direction.Y == 1 && direction.X == 0) break;
-                    newDirection.Y = -1;
-                    newDirection.X = 0;
-                    break;
-
-                case Keys.Down:
-                    if (direction.Y == -1 && direction.X == 0) break;
-                    newDirection.Y = 1;
-                    newDirection.X = 0;
-                    break;
-
-                case Keys.Left:
-                    if (direction.Y == 0 && direction.X == 1) break;
-                    newDirection.Y = 0;
-                    newDirection.X = -1;
-                    break;
-
-                case Keys.Right:
-                    if (direction.Y == 0 && direction.X == -1) break;
-                    newDirection.Y = 0;
-                    newDirection.X = 1;
-                    break;
-            }
-
-            
         }
     }
 }

@@ -50,7 +50,8 @@ namespace Zmijica
 
         
         protected Graphics graphics;
-        protected TableLayoutPanel screen;
+        protected Dictionary<int, TableLayoutPanel> screens = new Dictionary<int, TableLayoutPanel>();
+        protected TableLayoutPanel activeScreen;
         protected int width;    // duplicated in varijable
         public Varijable varijable;     // contains game variables
 
@@ -95,14 +96,35 @@ namespace Zmijica
             KeyReleased();
         }
 
+        protected void GetScreen(int width)
+        {
+            TableLayoutPanel screen;
+            if (screens.TryGetValue(width, out screen))
+            {
+                screen.BringToFront();
+                activeScreen = screen;
+            }
+            else { 
+                screens.Add(width, (screen = InitializeScreen(width)));
+                //Controls.Add(screen);
+                activeScreen = screen;
+                screen.BringToFront();
+            }
+            varijable.width = width;
+            this.width = width;
+        }
+
         /// <summary>
         /// Kreira piksele za prikaz elemenata igre. width je širina i visina u velikim pikselima, odnosno kvadratima.
         /// </summary>
         /// <param name="width"></param>
-        protected void InitializeScreen(int width)
+        protected TableLayoutPanel InitializeScreen(int width)
         {
-            this.width = width;
-            varijable.width = width;
+            //if (Controls.Contains(screen)) Controls.Remove(screen);
+
+            //this.width = width;
+            //varijable.width = width;
+            TableLayoutPanel screen = new TableLayoutPanel();
             int height = width;
             SuspendLayout();
             screen = new System.Windows.Forms.TableLayoutPanel();
@@ -110,15 +132,25 @@ namespace Zmijica
             screen.RowCount = width;
             //screen.Dock = System.Windows.Forms.DockStyle.Fill;
             screen.Location = new System.Drawing.Point(0, 0);
-            screen.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            screen.Size = new System.Drawing.Size(600, 580);
+            //screen.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
+            screen.RowStyles.Clear();
+            screen.Size = new Size(585, 585);
+            float wPercent = screen.Width / width;
+            float hPercent = screen.Height / width;
+            
             for (int i = 0; i < width; i++)
             {
-                screen.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100/width));
+                if((i % 50) != 0)
+                    screen.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, wPercent));
+                else
+                    screen.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, wPercent));
             }
-            for (int i = 0; i < height; i++)
+            for (int i = 0; i < width; i++)
             {
-                screen.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100 / height));
+                if((i % 50) != 0)
+                    screen.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, hPercent));
+                else
+                    screen.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, hPercent));
             }
             Controls.Add(screen);
 
@@ -138,6 +170,7 @@ namespace Zmijica
                 }
             }
             ResumeLayout();
+            return screen;
         }
 
         protected void ClearScreen()
@@ -146,7 +179,7 @@ namespace Zmijica
             {
                 for (int j = 0; j < width; j++)
                 {
-                    screen.GetControlFromPosition(i, j).BackColor = Color.Black;
+                    activeScreen.GetControlFromPosition(i, j).BackColor = Color.Black;
                 }
             }
         }
@@ -161,7 +194,7 @@ namespace Zmijica
             foreach (Point p in pts)
             {
                 if (p.X >= width || p.Y >= width) throw new Exception("Neki od danih piksela je izvan okvira ekrana.");
-                screen.GetControlFromPosition(p.X, p.Y).BackColor = color;
+                activeScreen.GetControlFromPosition(p.X, p.Y).BackColor = color;
             }
         }
 

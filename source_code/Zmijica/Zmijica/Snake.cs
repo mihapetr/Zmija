@@ -11,6 +11,7 @@ namespace Zmijica
 {
     internal class Snake
     {
+        string name = "Luigi";
         int width;
         //koristim List i nadam se da tu zadrzi poredak elemenata(first je glava, last je rep)
         private List<Point> position
@@ -18,6 +19,12 @@ namespace Zmijica
             get;
             set;
         }
+
+        public int Length
+        {
+            get { return position.Count; }
+        }
+
 
         public Point direction
         {
