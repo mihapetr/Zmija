@@ -6,6 +6,24 @@ RP3 project
 * nakon kloniranja i otvaranja 'Zmijica.sln' trebao bi funkcionirati build projekta
 * kod push i pull naredbi se automatski preskaću datoteke opisane u '.gitignore'
 
+## TODO
+### (Andrija)
+* zmija može preskočiti samu sebe negdje
+* skip za n polja 
+* pomak do ruba polja
+* pomak do same sebe
+
+### (Mihael)
+* prelaskom na novi nivo dobiva se broj_bodova(goalLength) i oduzimaju se ovisno o tome koliko koraka napravi zmija prije prelaska na novi nivo
+	* na taj način se nagrađuje korištenje dodatnih kontrola za kretanje
+* povezat sve forme u konačni proizvod
+
+### (Jakov?)
+* end screen : score + name
+* main menu screen : play, exit, enter name, settings
+* settings screen : game rules, controls settings
+* pause screen (=settings screen?) : game rules, control settings
+
 ## Izrada dokumentacije
 Kako bi generiranje dokumentacije što bolje teklo treba pogledati [XML tags](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags#general-tags).
 Iznad elemenata koda (članova, klasa, metoda, funkcija) koji se dokumentiraju stavlja se blok komentara kao u primjeru:
@@ -64,9 +82,4 @@ Class hierarchy `Form > GameForm > Game` is made to ensure code sustainability. 
 * `[InputEventHandler]` : called on input event
 
 `GameForm` is also an **abstract** class because of mentioned abstract methods implemented in the `Game` class objects.
-## Model
-### Polje
-### `SnakeProto`
 ### `Snake`
-## View
-### `IDrawable`
