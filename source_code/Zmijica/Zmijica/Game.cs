@@ -180,7 +180,7 @@ namespace Zmijica
             timestamp = 0;
 
             varijable.stage += 1;
-            if (varijable.stage == 4)
+            if (varijable.stage == 4)   // povećanje levela != povećanje stage-a
             {
                 varijable.stage = 1;
                 varijable.level += 1;

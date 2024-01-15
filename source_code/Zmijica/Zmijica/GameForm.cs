@@ -49,11 +49,9 @@ namespace Zmijica
         /****************** FORM CONTROL ***********************/
 
         
-        protected Graphics graphics;
         protected Dictionary<int, TableLayoutPanel> screens = new Dictionary<int, TableLayoutPanel>();
         protected TableLayoutPanel activeScreen;
-        protected int width;    // duplicated in varijable
-        public Varijable varijable;     // contains game variables
+        public Varijable varijable = new Varijable();  // contains game variables
 
         protected int FPS
         {
@@ -66,10 +64,8 @@ namespace Zmijica
         public GameForm()
         {
             InitializeComponent();
-            graphics = CreateGraphics();
             // Application.Idle += HandleIdle;
             timer1.Start();
-            varijable = new Varijable();
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -79,9 +75,7 @@ namespace Zmijica
 
         void HandleIdle(object sender, EventArgs e)
         {
-            SuspendLayout();
             Draw();
-            ResumeLayout();
         }
 
         private void GameForm_KeyDown(object sender, KeyEventArgs e)
@@ -111,7 +105,6 @@ namespace Zmijica
                 screen.BringToFront();
             }
             varijable.width = width;
-            this.width = width;
         }
 
         /// <summary>
@@ -122,8 +115,6 @@ namespace Zmijica
         {
             //if (Controls.Contains(screen)) Controls.Remove(screen);
 
-            //this.width = width;
-            //varijable.width = width;
             TableLayoutPanel screen = new TableLayoutPanel();
             int height = width;
             SuspendLayout();
@@ -175,9 +166,9 @@ namespace Zmijica
 
         protected void ClearScreen()
         {
-            for (int i = 0; i < width; i++)
+            for (int i = 0; i < varijable.width; i++)
             {
-                for (int j = 0; j < width; j++)
+                for (int j = 0; j < varijable.width; j++)
                 {
                     activeScreen.GetControlFromPosition(i, j).BackColor = Color.Black;
                 }
@@ -193,7 +184,7 @@ namespace Zmijica
         {
             foreach (Point p in pts)
             {
-                if (p.X >= width || p.Y >= width) throw new Exception("Neki od danih piksela je izvan okvira ekrana.");
+                if (p.X >= varijable.width || p.Y >= varijable.width) throw new Exception("Neki od danih piksela je izvan okvira ekrana.");
                 activeScreen.GetControlFromPosition(p.X, p.Y).BackColor = color;
             }
         }
