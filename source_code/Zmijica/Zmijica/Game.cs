@@ -25,7 +25,7 @@ namespace Zmijica
         public int FPS = 5;
 
         // score screen
-        public int score = 553;
+        public int score = 30;
         public int stage = 1;
         public int level = 1;
     }
@@ -117,18 +117,25 @@ namespace Zmijica
             // crtanje zmije
             DrawList(snake.getPosition(), Color.Green);
 
+            // za svaki pomak gubi se bod
+            if(direction.X != 0 || direction.Y != 0) varijable.score--;
+
             // crtanje ploče s bodovima
             labelLength.Text = $"Length: {snake.Length} / {varijable.goalLength}";
             labelScore.Text = $"Score: {varijable.score.ToString("00000000")}";
             labelStage.Text = $"Stage: {varijable.stage}";
             labelLevel.Text = $"Level: {varijable.level.ToString("0000")}";
 
+            // provjera bodova
+            if (varijable.score <= 0) varijable.snakeAlive = false;
+
             // provjera prelaska na novi stage
             if (varijable.goalLength == snake.Length) LevelUp();
             if (varijable.snakeAlive == false)
             {
                 timer1.Stop();
-
+                (new GameOverForm(varijable.score)).ShowDialog();
+                Close();
             }
         }
 
@@ -179,11 +186,14 @@ namespace Zmijica
                 varijable.level += 1;
 
                 // otežanje igre
-                FPS = varijable.FPS + 1;
+                FPS = varijable.FPS + 2;    // poziv settera koji djeluje na timer forme
                 varijable.poisonDamage += 1; 
             }
             // otežanje igre
             varijable.goalLength += 1;
+
+            // za prelazak naa novi level dobiva se novi bodovni resurs
+            varijable.score += varijable.level * varijable.goalLength * stage[varijable.stage].width * stage[varijable.stage].width;
 
             stage[varijable.stage] = new Stage(varijable.stage);
             GetScreen(stage[varijable.stage].width);

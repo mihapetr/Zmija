@@ -12,17 +12,17 @@ RP3 project
 * skip za n polja 
 * pomak do ruba polja
 * pomak do same sebe
+* dodati svoj dio u prezentaciju
 
 ### (Mihael)
-* prelaskom na novi nivo dobiva se broj_bodova(goalLength) i oduzimaju se ovisno o tome koliko koraka napravi zmija prije prelaska na novi nivo
-	* na taj način se nagrađuje korištenje dodatnih kontrola za kretanje
 * povezat sve forme u konačni proizvod
+* započeti prezentaciju
 
 ### (Jakov?)
-* end screen : score + name
 * main menu screen : play, exit, enter name, settings
 * settings screen : game rules, controls settings
 * pause screen (=settings screen?) : game rules, control settings
+* dodati svoj dio u prezentaciju
 
 ## Izrada dokumentacije
 Kako bi generiranje dokumentacije što bolje teklo treba pogledati [XML tags](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags#general-tags).

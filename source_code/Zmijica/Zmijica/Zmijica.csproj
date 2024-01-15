@@ -64,6 +64,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Food.cs" />
+    <Compile Include="GameOverForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameOverForm.Designer.cs">
+      <DependentUpon>GameOverForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Snake.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameForm.cs">
@@ -78,6 +84,9 @@
     <Compile Include="Stage.cs" />
     <EmbeddedResource Include="GameForm.resx">
       <DependentUpon>GameForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameOverForm.resx">
+      <DependentUpon>GameOverForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
