@@ -145,7 +145,7 @@ namespace Zmijica
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "GameForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Zmijica";
             this.Load += new System.EventHandler(this.Form2_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GameForm_KeyDown);
