@@ -9,9 +9,9 @@ RP3 project
 ## TODO
 ### (Andrija)
 * zmija može preskočiti samu sebe negdje
-* skip za n polja 
-* pomak do ruba polja
-* pomak do same sebe
+* skip za n polja : implementiraj deklariranu funkciju Game.SkipN(Point direction, int n)
+* pomak do ruba polja : implementiraj deklariranu fnkciju Game.SkipToEdge(Point direction)
+* pomak do same sebe : implementiraj deklariranu fnkciju Game.SkipToSelf(Point direction)
 * dodati svoj dio u prezentaciju
 
 ### (Mihael)
