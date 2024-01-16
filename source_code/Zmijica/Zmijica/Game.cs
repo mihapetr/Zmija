@@ -42,10 +42,10 @@ namespace Zmijica
 
         #endregion
 
-        // ---------------------------- VARIJABLE -------------------------------
+        #region Varijable
 
         List<Point> walls = new List<Point>();    // sadrži koordinate zida
-        Stage[] stage = new Stage[4];
+        Stage[] stage = new Stage[4];       // sadrži informacije o zidovima
 
         Snake snake;
         List<Tuple<Point, Food>> foodPosition;
@@ -55,15 +55,30 @@ namespace Zmijica
         ulong timestamp;
         Random r = new Random();
 
-        // -------------------------- TESTNE VARIJABLE ---------------------------
-        // ovamo stvari koje se testiraju
+        #endregion
 
+        #region Testne varijable
 
+        Keys tpEdgeActivator, tpSelfActivator;   // aktivatori za specijalne pokrete
+        Keys up, down, left, right;  // generalne kontrole
+        bool tpEdge, skipN, tpSelf;     // jesu li kretnje aktivirane posebnim tipkama
+        int skipAmount;
 
-        // ----------------------- Setup, Draw, KeyPressed ----------------------------------
+        #endregion
+
+        #region Setup, Draw, KeyPressed, KeyReleased
 
         public override void Setup() 
         {
+            // test
+            up = Keys.W;
+            down = Keys.S;
+            left = Keys.A;
+            right = Keys.D;
+            tpEdgeActivator = Keys.Space;
+            tpSelfActivator = Keys.Shift;
+            // endtest
+
             // inicijalizacija svih polja za igru
             // tako osiguravamo brzi prelazak
             stage[3] = new Stage(3);
@@ -141,39 +156,177 @@ namespace Zmijica
 
         public override void KeyPressed()
         {
-            switch (KeyCode)
+
+            if(KeyCode == up)
             {
-                case Keys.W:
-                case Keys.Up:
+                if (ActivateTp(new Point(0,-1))) return;
+                // default ponašanje : skretanje
+                else if (direction.Y == 1 && direction.X == 0) return;
+                newDirection.Y = -1;
+                newDirection.X = 0;
+            } 
+            else if(KeyCode == down)
+            {
+                if (ActivateTp(new Point(0,1))) return;
+                // default ponašanje : skretanje
+                else if (direction.Y == -1 && direction.X == 0) return;
+                newDirection.Y = 1;
+                newDirection.X = 0;
+            } 
+            else if(KeyCode == left)
+            {
+                if (ActivateTp(new Point(-1,0))) return;
+                // default ponašanje : skretanje
+                else if (direction.Y == 0 && direction.X == 1) return;
+                newDirection.Y = 0;
+                newDirection.X = -1;
+            } 
+            else if(KeyCode == right)
+            {
+                if (ActivateTp(new Point(1,0))) return;
+                // default ponašanje : skretanje
+                else if (direction.Y == 0 && direction.X == -1) return;
+                newDirection.Y = 0;
+                newDirection.X = 1;
+            }
+
+            // posebne kretnje
+
+            else if(KeyCode == tpEdgeActivator)
+            {
+                skipN = false; tpSelf = false;  // ostale deaktiviramo
+                tpEdge = true;
+            }
+            else if (KeyCode == tpSelfActivator)
+            {
+                skipN = false; tpEdge = false; // ostale deaktiviramo
+                tpSelf = true;
+            }
+            else if (KeyCode >= Keys.NumPad1 && KeyCode <= Keys.NumPad9)
+            {
+                skipAmount = (int)KeyCode - (int)Keys.NumPad0;
+                tpSelf = false; tpEdge = false; // ostale deaktiviramo
+                skipN = true;
+            }
+
+            /*switch (KeyCode)
+            {
+                //case Keys.W:
+                //case Keys.Up:
+                case up:
                     if (direction.Y == 1 && direction.X == 0) break;
                     newDirection.Y = -1;
                     newDirection.X = 0;
                     break;
 
-                case Keys.S:
-                case Keys.Down:
+                //case Keys.S:
+                //case Keys.Down:
+                case "down":
                     if (direction.Y == -1 && direction.X == 0) break;
                     newDirection.Y = 1;
                     newDirection.X = 0;
                     break;
 
-                case Keys.A:
-                case Keys.Left:
+                //case Keys.A:
+                //case Keys.Left:
+                case "left":
                     if (direction.Y == 0 && direction.X == 1) break;
                     newDirection.Y = 0;
                     newDirection.X = -1;
                     break;
 
-                case Keys.D:
-                case Keys.Right:
+                //case Keys.D:
+                //case Keys.Right:
+                case "right":
                     if (direction.Y == 0 && direction.X == -1) break;
                     newDirection.Y = 0;
                     newDirection.X = 1;
                     break;
+
+                case "teleport":
+                    Teleport(varijable.tpDirection);
+                    break;
+
+                case ""
+
+                default:
+                    break;
+            }*/
+        }
+
+        public override void KeyReleased()
+        {
+            if (KeyCode == tpEdgeActivator)
+            {
+                tpEdge = false;
+            }
+            else if (KeyCode == tpSelfActivator)
+            {
+                tpSelf = false;
+            }
+            else if (KeyCode >= Keys.NumPad1 && KeyCode <= Keys.NumPad9)
+            // otpušten je broj na tipkovnici
+            {
+                skipN = false;
             }
         }
 
-        // ------------------- POMOĆNE FUNKCIJE --------------------------------
+        #endregion
+
+        #region Pomoćne funkcije
+
+        bool ActivateTp(Point dir)
+        {
+            if(tpSelf)
+            {
+                TeleportToSelf(dir);
+                return true;
+            }
+            else if(tpEdge)
+            {
+                TeleportToEdge(dir);
+                return true;
+            }
+            else if(skipN)
+            {
+                SkipN(dir, skipAmount);
+                return true;
+            }
+
+            return false;   // daje znak da je default ponašanje u pitanju
+        }
+
+        /// <summary>
+        /// Zmija ide do ruba u smjeru direction.
+        /// Direction iz skupa {(-1,0),(1,0),(0,1),(0,-1)}
+        /// </summary>
+        /// <param name="direction"></param>
+        void TeleportToEdge(Point direction)
+        {
+
+        }
+
+        /// <summary>
+        /// Zmija preskače n polja u smjeru direction.
+        /// Direction iz skupa {(-1,0),(1,0),(0,1),(0,-1)}
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="n"></param>
+        void SkipN(Point direction, int n)
+        {
+
+        }
+
+        /// <summary>
+        /// Zmija se teleportira do sebe u smjeru direction.
+        /// Što ako u tom smjeru nema zmije? Ništa se ne događa.
+        /// Direction iz skupa {(-1,0),(1,0),(0,1),(0,-1)}
+        /// </summary>
+        /// <param name="direction"></param>
+        void TeleportToSelf(Point direction)
+        {
+
+        }
 
         void LevelUp()
         {
@@ -348,5 +501,7 @@ namespace Zmijica
                 newPoisonFood(headPosition, snakePosition);
             }
         }
+
+        #endregion
     }
 }
