@@ -8,7 +8,8 @@ using System.Windows.Forms;
 
 namespace Zmijica
 {
-
+    #region M
+    etavarijable
     /// <summary>
     /// Meta varijable. Svaka instanca Game ima svoju instancu.
     /// </summary>
@@ -29,6 +30,8 @@ namespace Zmijica
         public int stage = 1;
         public int level = 1;
     }
+
+    #endregion
 
     internal class Game : GameForm
     {

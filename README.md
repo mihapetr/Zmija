@@ -6,6 +6,9 @@ RP3 project
 * nakon kloniranja i otvaranja 'Zmijica.sln' trebao bi funkcionirati build projekta
 * kod push i pull naredbi se automatski preskaću datoteke opisane u '.gitignore'
 
+## Generalne bilješke
+* default kontrole su a,w,s,d, space, shift, numpad brojevi
+
 ## TODO
 ### (Andrija)
 * zmija može preskočiti samu sebe negdje
@@ -15,8 +18,7 @@ RP3 project
 * dodati svoj dio u prezentaciju
 
 ### (Mihael)
-* povezat sve forme u konačni proizvod
-* započeti prezentaciju
+* dovršiti svoj dio prezentacije
 
 ### (Jakov?)
 * main menu screen : play, exit, enter name, settings
