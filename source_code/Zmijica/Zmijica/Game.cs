@@ -55,9 +55,7 @@ namespace Zmijica
         ulong timestamp;
         Random r = new Random();
 
-        #endregion
-
-        #region Testne varijable
+        // varijable za kontorlu zmije
 
         Keys tpEdgeActivator, tpSelfActivator;   // aktivatori za specijalne pokrete
         Keys up, down, left, right;  // generalne kontrole
@@ -66,18 +64,21 @@ namespace Zmijica
 
         #endregion
 
+        #region Testne varijable
+
+        #endregion
+
         #region Setup, Draw, KeyPressed, KeyReleased
 
         public override void Setup() 
         {
-            // test
+            // default kontrole
             up = Keys.W;
             down = Keys.S;
             left = Keys.A;
             right = Keys.D;
             tpEdgeActivator = Keys.Space;
             tpSelfActivator = Keys.Shift;
-            // endtest
 
             // inicijalizacija svih polja za igru
             // tako osiguravamo brzi prelazak
@@ -152,11 +153,17 @@ namespace Zmijica
                 (new GameOverForm(varijable.score)).ShowDialog();
                 Close();
             }
+
+            // indikator korisniku da su uključeni aktivatori za specijalne kretnje
+            labelSkipAmount.Text = skipAmount.ToString();
+            labelSkipAmount.ForeColor = skipN ? Color.Yellow : Color.Black;
+            if (tpSelf) pictureBox.BackColor = Color.Green;
+            else if (tpEdge) pictureBox.BackColor = Color.Purple;
+            else pictureBox.BackColor = Color.Black;
         }
 
         public override void KeyPressed()
         {
-
             if(KeyCode == up)
             {
                 if (ActivateTp(new Point(0,-1))) return;
@@ -192,15 +199,16 @@ namespace Zmijica
 
             // posebne kretnje
 
-            else if(KeyCode == tpEdgeActivator)
+            else if(KeyCode == tpEdgeActivator || ModifierKeys == tpEdgeActivator)
             {
                 skipN = false; tpSelf = false;  // ostale deaktiviramo
                 tpEdge = true;
             }
-            else if (KeyCode == tpSelfActivator)
+            else if (KeyCode == tpSelfActivator || ModifierKeys == tpSelfActivator)
             {
                 skipN = false; tpEdge = false; // ostale deaktiviramo
                 tpSelf = true;
+                pictureBox.BackColor = Color.Green;
             }
             else if (KeyCode >= Keys.NumPad1 && KeyCode <= Keys.NumPad9)
             {
@@ -256,6 +264,8 @@ namespace Zmijica
 
         public override void KeyReleased()
         {
+            //if (ModifierKeys != Keys.Shift) tpSelf = false;
+
             if (KeyCode == tpEdgeActivator)
             {
                 tpEdge = false;
@@ -269,12 +279,21 @@ namespace Zmijica
             {
                 skipN = false;
             }
+            if(ModifierKeys != tpSelfActivator && ModifierKeys != tpEdgeActivator)
+            {
+                tpSelf = tpEdge = false;
+            }
         }
 
         #endregion
 
         #region Pomoćne funkcije
 
+        /// <summary>
+        /// Provjerava hoće li zmijica koristiti posebne kontrole
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <returns></returns>
         bool ActivateTp(Point dir)
         {
             if(tpSelf)
@@ -333,13 +352,13 @@ namespace Zmijica
             timestamp = 0;
 
             varijable.stage += 1;
+            if((varijable.stage % 2) == 0) FPS = varijable.FPS + 2;    // poziv settera koji djeluje na timer forme
             if (varijable.stage == 4)   // povećanje levela != povećanje stage-a
             {
                 varijable.stage = 1;
                 varijable.level += 1;
 
                 // otežanje igre
-                FPS = varijable.FPS + 2;    // poziv settera koji djeluje na timer forme
                 varijable.poisonDamage += 1; 
             }
             // otežanje igre
