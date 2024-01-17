@@ -2,50 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Zmijica
 {
-    #region Metavarijable
-    /// <summary>
-    /// Meta varijable. Svaka instanca Game ima svoju instancu.
-    /// </summary>
-    public class Varijable
-    {
-        // tehnički detalji
-        public int width = 10;
-        public bool snakeAlive = true;
-
-        // težina igre
-        public int goalLength = 3;
-        public int poisonInterval = 20;
-        public int poisonDamage = 3;
-        public int FPS = 4;
-
-        // score screen
-        //TODO ovo moze biti 30 ali onda treba dobivati bodove kad pojede nesto(bolje da sam ostane ovak da se ne komplicira
-        public int score = 1000;
-        public int stage = 1;
-        public int level = 1;
-
-        /// <summary>
-        /// Specijalna inicijalizacija varijabli za versus mod igre.
-        /// </summary>
-        public void vsModeInit()
-        {
-            width = 30;
-            FPS = 5;
-            poisonDamage = 4;
-            poisonInterval = 20;
-        }
-    }
-
-    #endregion
-
-    internal class Game : GameForm
+    internal class GameVersus : GameForm
     {
         #region Konstruktor 
 
@@ -53,7 +16,7 @@ namespace Zmijica
         /// Kako bismo osigurali funkcionalnost forme, na početku se 
         /// poziva <see cref="GameForm.GameForm"/>.
         /// </summary>
-        public Game() : base() {}   // ovdje se ništa ne upisuje
+        public GameVersus() : base() { }   // ovdje se ništa ne upisuje
 
         #endregion
 
@@ -64,7 +27,7 @@ namespace Zmijica
 
         Snake snake;
         List<Tuple<Point, Food>> foodPosition;
-        Point direction = new Point(0,0);    // testne kontrole //!mislim da ne treba(init smjer zmijice na 0,0)
+        Point direction = new Point(0, 0);    // testne kontrole //!mislim da ne treba(init smjer zmijice na 0,0)
         Point newDirection = new Point(0, 0);    // testne kontrole //!mislim da ne treba(init smjer zmijice na 0,0)
         Tuple<Point, Food> newFood;
         ulong timestamp;
@@ -89,7 +52,7 @@ namespace Zmijica
 
         #region Setup, Draw, KeyPressed, KeyReleased
 
-        public override void Setup() 
+        public override void Setup()
         {
             // default kontrole
             up = Keys.W;
@@ -99,16 +62,17 @@ namespace Zmijica
             tpEdgeActivator = Keys.Shift;
             tpSelfActivator = Keys.Space;
 
-            // inicijalizacija svih polja za igru
-            // tako osiguravamo brzi prelazak
-            stage[3] = new Stage(3);
-            GetScreen(stage[3].width);   // za rezoluciju ekrana
+            #region mala modifikacija prozora
 
-            stage[2] = new Stage(2);
-            GetScreen(stage[2].width);
+            varijable.vsModeInit();     // tamo su vrijednosti za ovaj mode
+            GetScreen(varijable.width);
+            Width -= 15;
+            activeScreen.Height -= 15;
+            BackColor = Color.FromArgb(50,0,50);
+            labelLevel.Hide();
+            labelStage.Hide();
 
-            stage[1] = new Stage(1);
-            GetScreen(stage[1].width);
+            #endregion
 
             // food processing
             timestamp = 0;
@@ -126,10 +90,6 @@ namespace Zmijica
 
             snake = new Snake(varijable.width); // nova zmijica na (3,3) //TODO ovo treba ovisiti o vrsti levela
             //if(timestamp == 0) DrawList(snake.getPosition(), Color.Green); // inicijalno crtanje zmije
-
-            walls = stage[1].getWalls();
-            DrawList(walls, Color.Purple);  // crta točke iz walls
-
         }
 
         public override void Draw()
@@ -188,16 +148,13 @@ namespace Zmijica
             if (direction.X != 0 || direction.Y != 0) varijable.score--;
 
             // crtanje ploče s bodovima
-            labelLength.Text = $"Length: {snake.Length} / {varijable.goalLength}";
+            labelLength.Text = $"Length: {snake.Length}";
             labelScore.Text = $"Score: {varijable.score.ToString("00000000")}";
-            labelStage.Text = $"Stage: {varijable.stage}";
-            labelLevel.Text = $"Level: {varijable.level.ToString("0000")}";
 
             // provjera bodova
             if (varijable.score <= 0) varijable.snakeAlive = false;
 
-            // provjera prelaska na novi stage
-            if (varijable.goalLength <= snake.Length) LevelUp();
+            // provjera kraja
             if (varijable.snakeAlive == false)
             {
                 timer1.Stop();
@@ -207,62 +164,62 @@ namespace Zmijica
 
             // indikator korisniku da su uključeni aktivatori za specijalne kretnje
             labelSkipAmount.Text = skipAmount.ToString();
-            labelSkipAmount.ForeColor = skipN ? Color.Yellow : Color.Black;
+            labelSkipAmount.ForeColor = skipN ? Color.Yellow : BackColor;
             if (tpSelf) pictureBox.BackColor = Color.Green;
             else if (tpEdge) pictureBox.BackColor = Color.Purple;
-            else pictureBox.BackColor = Color.Black;
+            else pictureBox.BackColor = BackColor;
         }
 
         public override void KeyPressed()
         {
 
-            if(KeyCode == up)
+            if (KeyCode == up)
             {
                 if (newLevel)
                 {
                     newLevel = false;
                     return;
                 }
-                if (ActivateTp(new Point(0,-1))) return;
+                if (ActivateTp(new Point(0, -1))) return;
                 // default ponašanje : skretanje
                 else if (direction.Y == 1 && direction.X == 0) return;
                 newDirection.Y = -1;
                 newDirection.X = 0;
-            } 
-            else if(KeyCode == down)
+            }
+            else if (KeyCode == down)
             {
                 if (newLevel)
                 {
                     newLevel = false;
                     return;
                 }
-                if (ActivateTp(new Point(0,1))) return;
+                if (ActivateTp(new Point(0, 1))) return;
                 // default ponašanje : skretanje
                 else if (direction.Y == -1 && direction.X == 0) return;
                 newDirection.Y = 1;
                 newDirection.X = 0;
-            } 
-            else if(KeyCode == left)
+            }
+            else if (KeyCode == left)
             {
                 if (newLevel)
                 {
                     newLevel = false;
                     return;
                 }
-                if (ActivateTp(new Point(-1,0))) return;
+                if (ActivateTp(new Point(-1, 0))) return;
                 // default ponašanje : skretanje
                 else if (direction.Y == 0 && direction.X == 1) return;
                 newDirection.Y = 0;
                 newDirection.X = -1;
-            } 
-            else if(KeyCode == right)
+            }
+            else if (KeyCode == right)
             {
                 if (newLevel)
                 {
                     newLevel = false;
                     return;
                 }
-                if (ActivateTp(new Point(1,0))) return;
+                if (ActivateTp(new Point(1, 0))) return;
                 // default ponašanje : skretanje
                 else if (direction.Y == 0 && direction.X == -1) return;
                 newDirection.Y = 0;
@@ -271,7 +228,7 @@ namespace Zmijica
 
             // posebne kretnje
 
-            else if(KeyCode == tpEdgeActivator || ModifierKeys == tpEdgeActivator)
+            else if (KeyCode == tpEdgeActivator || ModifierKeys == tpEdgeActivator)
             {
                 skipN = false; tpSelf = false;  // ostale deaktiviramo
                 tpEdge = true;
@@ -350,7 +307,7 @@ namespace Zmijica
             {
                 skipN = false;
             }
-            if(ModifierKeys != tpSelfActivator && ModifierKeys != tpEdgeActivator)
+            if (ModifierKeys != tpSelfActivator && ModifierKeys != tpEdgeActivator)
             {
                 tpSelf = tpEdge = false;
             }
@@ -367,17 +324,17 @@ namespace Zmijica
         /// <returns></returns>
         bool ActivateTp(Point dir)
         {
-            if(tpSelf)
+            if (tpSelf)
             {
                 TeleportToSelf(dir);
                 return true;
             }
-            else if(tpEdge)
+            else if (tpEdge)
             {
                 TeleportToEdge(dir);
                 return true;
             }
-            else if(skipN)
+            else if (skipN)
             {
                 SkipN(dir, skipAmount);
                 return true;
@@ -407,7 +364,7 @@ namespace Zmijica
                 if (headPosition.X == -1 || headPosition.Y == -1 || headPosition.X == varijable.width || headPosition.Y == varijable.width)
                     return;
 
-                    foreach (Point wall in walls)
+                foreach (Point wall in walls)
                 {
                     if (headPosition == wall)
                         return;
@@ -467,7 +424,7 @@ namespace Zmijica
             if (OppositeDirection(direction, this.direction)) return;
 
             //TODO nemam pojma kak se ovo tesitra(poziva)
-            for(int i = 0; i < n; i++)
+            for (int i = 0; i < n; i++)
             {
                 //gdje ce se pomaknut u sljedecem otkucaju
                 Point headPosition = snake.headPosition();
@@ -593,14 +550,14 @@ namespace Zmijica
             varijable.stage += 1;
             varijable.goalLength += 1;
 
-            if((varijable.stage % 2) == 0) FPS = varijable.FPS + 2;    // poziv settera koji djeluje na timer forme
+            if ((varijable.stage % 2) == 0) FPS = varijable.FPS + 2;    // poziv settera koji djeluje na timer forme
             if (varijable.stage == 4)   // povećanje levela != povećanje stage-a
             {
                 varijable.stage = 1;
                 varijable.level += 1;
 
                 // otežanje igre
-                varijable.poisonDamage += 1; 
+                varijable.poisonDamage += 1;
             }
 
             //nakon sto se ovdje inicijalizira treba uvijek korist varijable.width, ovak je neuredno
@@ -753,7 +710,7 @@ namespace Zmijica
             bool hasEaten = false;
             foreach (Tuple<Point, Food> food in foodPosition.ToList())
             {
-                if(food.Item1 == headPosition)
+                if (food.Item1 == headPosition)
                 {
                     snake.update(direction, food.Item2, varijable.poisonDamage);
                     foodPosition.Remove(food);

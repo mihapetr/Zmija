@@ -17,6 +17,7 @@ namespace Zmijica
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainMenu());
+            //Application.Run(new GameVersus());    // debug
         }
     }
 }

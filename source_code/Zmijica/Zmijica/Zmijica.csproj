@@ -70,6 +70,9 @@
     <Compile Include="GameOverForm.Designer.cs">
       <DependentUpon>GameOverForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GameVersus.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="HelpScreen.cs">
       <SubType>Form</SubType>
     </Compile>

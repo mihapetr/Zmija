@@ -195,5 +195,11 @@ namespace Zmijica
             // Ovdje je posuđen handler za to jer za kretanje zmije želimo dosta niski refresh rate.
             HandleIdle(sender, e);
         }
+
+        private void GameForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            timer1.Stop();
+            Dispose();
+        }
     }
 }
