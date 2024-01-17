@@ -7,18 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Zmijica.Properties;
 
 namespace Zmijica
 {
+
     /// <summary>
     /// Klasa napravljena kao sloj između <see cref="Form"/> i <see cref="Game"/>.
     /// 
     /// </summary>
     public abstract partial class GameForm : Form
     {
-        /******** FOR Game SUBCLASS **********/
+        #region Za podklasu Game
 
         protected Keys KeyCode;
+        public ControlSettings cSettings;
 
         /// <summary>
         /// Standardna funkcija kod programiranja igara.
@@ -46,9 +49,25 @@ namespace Zmijica
         /// </summary>
         public virtual void KeyReleased() { }
 
-        /****************** FORM CONTROL ***********************/
+        #endregion
 
-        
+        #region Konstruktor
+        /// <summary>
+        /// Prima postavke iz Options forme.
+        /// </summary>
+        /// <param name="sts"></param>
+        public GameForm(ControlSettings sts)
+        {
+            InitializeComponent();
+            // Application.Idle += HandleIdle;
+            timer1.Start();
+            cSettings = sts;
+        }
+
+        #endregion
+
+        #region Form ponašanje
+
         protected Dictionary<int, TableLayoutPanel> screens = new Dictionary<int, TableLayoutPanel>();
         protected TableLayoutPanel activeScreen;
         public Varijable varijable = new Varijable();  // contains game variables
@@ -59,13 +78,6 @@ namespace Zmijica
             {
                 timer1.Interval = 1000 / value;
             }
-        }
-
-        public GameForm()
-        {
-            InitializeComponent();
-            // Application.Idle += HandleIdle;
-            timer1.Start();
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -201,5 +213,7 @@ namespace Zmijica
             timer1.Stop();
             Dispose();
         }
+
+        #endregion
     }
 }

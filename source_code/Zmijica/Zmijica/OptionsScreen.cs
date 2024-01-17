@@ -12,9 +12,48 @@ namespace Zmijica
 {
     public partial class OptionsScreen : Form
     {
-        public OptionsScreen()
+        ControlSettings cSettings;
+
+        public OptionsScreen(ControlSettings sts)
         {
             InitializeComponent();
+            cSettings = sts;
+            labelUp.Text = cSettings.up.ToString();
+            labelDown.Text = cSettings.down.ToString();
+            labelLeft.Text = cSettings.left.ToString();
+            labelRight.Text = cSettings.right.ToString();
+            labelSelf.Text = cSettings.tpSelfActovator.ToString();
+            labelEdge.Text = cSettings.tpEdgeActivator.ToString();
+        }
+
+        private void labelUp_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelRight_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelLeft_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelDown_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelEdge_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelSelf_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

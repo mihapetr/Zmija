@@ -16,7 +16,7 @@ namespace Zmijica
         /// Kako bismo osigurali funkcionalnost forme, na početku se 
         /// poziva <see cref="GameForm.GameForm"/>.
         /// </summary>
-        public GameVersus() : base() { }   // ovdje se ništa ne upisuje
+        public GameVersus(ControlSettings sts) : base(sts) { }   // ovdje se ništa ne upisuje
 
         #endregion
 

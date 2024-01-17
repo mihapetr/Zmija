@@ -52,7 +52,7 @@ namespace Zmijica
         /// Kako bismo osigurali funkcionalnost forme, na početku se 
         /// poziva <see cref="GameForm.GameForm"/>.
         /// </summary>
-        public Game() : base() {}   // ovdje se ništa ne upisuje
+        public Game(ControlSettings sts) : base(sts) {}   // ovdje se ništa ne upisuje
 
         #endregion
 
@@ -90,13 +90,13 @@ namespace Zmijica
 
         public override void Setup() 
         {
-            // default kontrole
-            up = Keys.W;
-            down = Keys.S;
-            left = Keys.A;
-            right = Keys.D;
-            tpEdgeActivator = Keys.Shift;
-            tpSelfActivator = Keys.Space;
+            // kontrole se postavljaju ovisno o Options formi
+            up = cSettings.up;
+            down = cSettings.down;
+            left = cSettings.left;
+            right = cSettings.right;
+            tpEdgeActivator = cSettings.tpEdgeActivator;
+            tpSelfActivator = cSettings.tpSelfActovator;
 
             // inicijalizacija svih polja za igru
             // tako osiguravamo brzi prelazak
