@@ -20,13 +20,12 @@ namespace Zmijica
         public bool snakeAlive = true;
 
         // težina igre
-        public int goalLength = 3;
+        public int goalLength = 8;
         public int poisonInterval = 20;
         public int poisonDamage = 3;
         public int FPS = 4;
 
         // score screen
-        //TODO ovo moze biti 30 ali onda treba dobivati bodove kad pojede nesto(bolje da sam ostane ovak da se ne komplicira
         public int score = 1000;
         public int stage = 1;
         public int level = 1;
@@ -124,7 +123,7 @@ namespace Zmijica
             transparentPoints.Insert(0, new Point(varijable.width - 4, 3));
             transparentPoints.Insert(0, new Point(3, varijable.width - 4));
 
-            snake = new Snake(varijable.width); // nova zmijica na (3,3) //TODO ovo treba ovisiti o vrsti levela
+            snake = new Snake(varijable.width); // nova zmijica na (3,3)
             //if(timestamp == 0) DrawList(snake.getPosition(), Color.Green); // inicijalno crtanje zmije
 
             walls = stage[1].getWalls();
@@ -184,7 +183,6 @@ namespace Zmijica
 
 
             // za svaki pomak gubi se bod
-            //TODO ak je stisnut shift(il kaj got onda gubi bod samo svaki drugi pomak)
             if (direction.X != 0 || direction.Y != 0) varijable.score--;
 
             // crtanje ploče s bodovima
@@ -466,7 +464,6 @@ namespace Zmijica
         {
             if (OppositeDirection(direction, this.direction)) return;
 
-            //TODO nemam pojma kak se ovo tesitra(poziva)
             for(int i = 0; i < n; i++)
             {
                 //gdje ce se pomaknut u sljedecem otkucaju
@@ -523,6 +520,26 @@ namespace Zmijica
         void TeleportToSelf(Point direction)
         {
             if (OppositeDirection(direction, this.direction)) return;
+            Point targetLocation = new Point();
+            bool isAplicable = false;
+            Point currentHeadPosition = snake.headPosition();
+            List<Point> currentSnakePosition = snake.getPosition();
+            while (currentHeadPosition.X < varijable.width && currentHeadPosition.Y < varijable.width && currentHeadPosition.X > -1 && currentHeadPosition.Y > -1)
+            {
+                currentHeadPosition.X += direction.X;
+                currentHeadPosition.Y += direction.Y;
+                foreach(Point snake in currentSnakePosition)
+                {
+                    if(snake == currentHeadPosition)
+                    {
+                        isAplicable = true;
+                        targetLocation = currentHeadPosition;
+                        break;
+                    }
+                    if(isAplicable == true) break;
+                }
+            }
+            if(isAplicable == false) return;
 
             //? ovo kao prima direction znaci ako je isao u nekom smjeru, moze se pomakmnut do zida da zadrzi smjer kretanja? ok
 
@@ -532,6 +549,8 @@ namespace Zmijica
                 Point headPosition = snake.headPosition();
                 headPosition.X += direction.X;
                 headPosition.Y += direction.Y;
+                if (headPosition == targetLocation) break;
+
                 List<Point> snakePosition = snake.getPosition();
                 if (headPosition.X == -1 || headPosition.Y == -1 || headPosition.X == varijable.width || headPosition.Y == varijable.width)
                     return;
@@ -591,16 +610,17 @@ namespace Zmijica
             timestamp = 0;
 
             varijable.stage += 1;
-            varijable.goalLength += 1;
 
-            if((varijable.stage % 2) == 0) FPS = varijable.FPS + 2;    // poziv settera koji djeluje na timer forme
+            //if((varijable.stage % 2) == 0) FPS = varijable.FPS + 2;    // poziv settera koji djeluje na timer forme
             if (varijable.stage == 4)   // povećanje levela != povećanje stage-a
             {
                 varijable.stage = 1;
                 varijable.level += 1;
 
                 // otežanje igre
-                varijable.poisonDamage += 1; 
+                varijable.poisonDamage += 1;
+                varijable.goalLength += 2;
+                FPS = varijable.FPS + 2;
             }
 
             //nakon sto se ovdje inicijalizira treba uvijek korist varijable.width, ovak je neuredno
@@ -612,7 +632,7 @@ namespace Zmijica
             //stage[varijable.stage] = new Stage(varijable.stage);
             //GetScreen(stage[varijable.stage].width);
 
-            snake = new Snake(varijable.width); // nova zmijica na (3,3) //TODO ovo treba ovisiti o vrsti levela
+            snake = new Snake(varijable.width); // nova zmijica na (3,3)
             //DrawList(snake.getPosition(), Color.Green); // inicijalno crtanje zmije
 
             walls = stage[varijable.stage].getWalls();
@@ -728,7 +748,6 @@ namespace Zmijica
         }
         private void updateGame()
         {
-            //TODO mozda maknut event listenere dok se ova funkcija izvrsava
             direction = newDirection;
 
             if (direction.X == 0 && direction.Y == 0) return;
