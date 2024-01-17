@@ -20,7 +20,7 @@ namespace Zmijica
         public bool snakeAlive = true;
 
         // težina igre
-        public int goalLength = 2;
+        public int goalLength = 3;
         public int poisonInterval = 20;
         public int poisonDamage = 3;
         public int FPS = 4;
@@ -580,6 +580,8 @@ namespace Zmijica
             timestamp = 0;
 
             varijable.stage += 1;
+            varijable.goalLength += 1;
+
             if((varijable.stage % 2) == 0) FPS = varijable.FPS + 2;    // poziv settera koji djeluje na timer forme
             if (varijable.stage == 4)   // povećanje levela != povećanje stage-a
             {
