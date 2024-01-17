@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,13 +20,14 @@ namespace Zmijica
         public bool snakeAlive = true;
 
         // težina igre
-        public int goalLength = 3;
+        public int goalLength = 8;
         public int poisonInterval = 20;
         public int poisonDamage = 3;
-        public int FPS = 5;
+        public int FPS = 4;
 
         // score screen
-        public int score = 30;
+        //TODO ovo moze biti 30 ali onda treba dobivati bodove kad pojede nesto(bolje da sam ostane ovak da se ne komplicira
+        public int score = 1000;
         public int stage = 1;
         public int level = 1;
     }
@@ -54,6 +56,10 @@ namespace Zmijica
         Tuple<Point, Food> newFood;
         ulong timestamp;
         Random r = new Random();
+        List<Point> transparentPoints;
+        // ovo sam stavio tak da kad krene novi level moras dva puta stisnut neku komandu prije nego se zmija krene kretat
+        // (stalno sam gubio jer iznenada krene u novi level)
+        bool newLevel = false;
 
         // -------------------------- TESTNE VARIJABLE ---------------------------
         // ovamo stvari koje se testiraju
@@ -64,6 +70,7 @@ namespace Zmijica
 
         public override void Setup() 
         {
+
             // inicijalizacija svih polja za igru
             // tako osiguravamo brzi prelazak
             stage[3] = new Stage(3);
@@ -83,20 +90,30 @@ namespace Zmijica
 
             FPS = varijable.FPS;    // postavljanje osvježavanja
 
+            // napravio da je svaki level isti width pa moze bit ovdje
+            transparentPoints = new List<Point>();
+            transparentPoints.Insert(0, new Point(3, 3));
+            transparentPoints.Insert(0, new Point(varijable.width - 4, 3));
+            transparentPoints.Insert(0, new Point(3, varijable.width - 4));
+
             snake = new Snake(varijable.width); // nova zmijica na (3,3) //TODO ovo treba ovisiti o vrsti levela
-            DrawList(snake.getPosition(), Color.Green); // inicijalno crtanje zmije
+            //if(timestamp == 0) DrawList(snake.getPosition(), Color.Green); // inicijalno crtanje zmije
 
             walls = stage[1].getWalls();
             DrawList(walls, Color.Purple);  // crta točke iz walls
+
         }
 
         public override void Draw()
         {
+
             // resetiranje pozadine
             ClearScreen();
             DrawList(walls, Color.Purple);  // crta točke iz walls
-
             updateGame();   // računi za frame
+
+            transparentPoints.Insert(0, new Point(varijable.width - 4, varijable.width - 4));
+            DrawList(transparentPoints, Color.DarkGray);
 
             // nacrtaj standardFood
             List<Point> standardFood = new List<Point>();
@@ -114,11 +131,33 @@ namespace Zmijica
             }
             DrawList(poisonFood, Color.Red);
 
+
             // crtanje zmije
-            DrawList(snake.getPosition(), Color.Green);
+            List<Point> snakePoints = snake.getPosition();
+            DrawList(snakePoints, Color.Green);
+
+            List<Point> snakeInTransperentPoints = new List<Point>();
+            foreach (Point snakePoint in snakePoints)
+            {
+                if (snakePoint == snake.headPosition()) continue;
+                foreach (Point transparentPoint in transparentPoints)
+                {
+                    if (transparentPoint == snakePoint)
+                    {
+                        snakeInTransperentPoints.Insert(0, transparentPoint);
+                    }
+                }
+            }
+            DrawList(snakeInTransperentPoints, Color.LightCyan); // crtanje transparentnih polja na kojima se zmija nalazi
+
+            List<Point> snakeHead = new List<Point>();
+            snakeHead.Insert(0, snake.headPosition());
+            DrawList(snakeHead, Color.DarkGreen);
+
 
             // za svaki pomak gubi se bod
-            if(direction.X != 0 || direction.Y != 0) varijable.score--;
+            //TODO ak je stisnut shift(il kaj got onda gubi bod samo svaki drugi pomak)
+            if (direction.X != 0 || direction.Y != 0) varijable.score--;
 
             // crtanje ploče s bodovima
             labelLength.Text = $"Length: {snake.Length} / {varijable.goalLength}";
@@ -145,6 +184,11 @@ namespace Zmijica
             {
                 case Keys.W:
                 case Keys.Up:
+                    if (newLevel)
+                    {
+                        newLevel = false;
+                        break;
+                    }
                     if (direction.Y == 1 && direction.X == 0) break;
                     newDirection.Y = -1;
                     newDirection.X = 0;
@@ -152,6 +196,11 @@ namespace Zmijica
 
                 case Keys.S:
                 case Keys.Down:
+                    if (newLevel)
+                    {
+                        newLevel = false;
+                        break;
+                    }
                     if (direction.Y == -1 && direction.X == 0) break;
                     newDirection.Y = 1;
                     newDirection.X = 0;
@@ -159,6 +208,11 @@ namespace Zmijica
 
                 case Keys.A:
                 case Keys.Left:
+                    if (newLevel)
+                    {
+                        newLevel = false;
+                        break;
+                    }
                     if (direction.Y == 0 && direction.X == 1) break;
                     newDirection.Y = 0;
                     newDirection.X = -1;
@@ -166,6 +220,11 @@ namespace Zmijica
 
                 case Keys.D:
                 case Keys.Right:
+                    if (newLevel)
+                    {
+                        newLevel = false;
+                        break;
+                    }
                     if (direction.Y == 0 && direction.X == -1) break;
                     newDirection.Y = 0;
                     newDirection.X = 1;
@@ -177,20 +236,23 @@ namespace Zmijica
 
         void LevelUp()
         {
+            newLevel = true;
             timestamp = 0;
-
             varijable.stage += 1;
+
             if (varijable.stage == 4)   // povećanje levela != povećanje stage-a
             {
                 varijable.stage = 1;
                 varijable.level += 1;
 
                 // otežanje igre
-                FPS = varijable.FPS + 2;    // poziv settera koji djeluje na timer forme
-                varijable.poisonDamage += 1; 
+                FPS = varijable.FPS + 1;    // poziv settera koji djeluje na timer forme
+                varijable.poisonDamage += 1;
+                varijable.goalLength += 2;
             }
-            // otežanje igre
-            varijable.goalLength += 1;
+
+            //nakon sto se ovdje inicijalizira treba uvijek korist varijable.width, ovak je neuredno
+            varijable.width = stage[varijable.stage].width;
 
             // za prelazak naa novi level dobiva se novi bodovni resurs
             varijable.score += varijable.level * varijable.goalLength * stage[varijable.stage].width * stage[varijable.stage].width;
@@ -199,7 +261,7 @@ namespace Zmijica
             GetScreen(stage[varijable.stage].width);
 
             snake = new Snake(varijable.width); // nova zmijica na (3,3) //TODO ovo treba ovisiti o vrsti levela
-            DrawList(snake.getPosition(), Color.Green); // inicijalno crtanje zmije
+            //DrawList(snake.getPosition(), Color.Green); // inicijalno crtanje zmije
 
             walls = stage[varijable.stage].getWalls();
             DrawList(walls, Color.Purple);  // crta točke iz walls
@@ -208,6 +270,7 @@ namespace Zmijica
             newDirection = new Point(0, 0);
 
             // food processing
+            //TODO jedan timestamp = 0 se moze izbrisat?
             timestamp = 0;
             foodPosition = new List<Tuple<Point, Food>>();
             newFood = new Tuple<Point, Food>(new Point(7, 7), Food.standard);
@@ -228,7 +291,6 @@ namespace Zmijica
                 }
             }
             if (headPosition == position) isLegalPosition = false;
-
             //kolizija sa hranom?
             foreach (Tuple<Point, Food> food in foodPosition.ToList())
             {
@@ -238,7 +300,6 @@ namespace Zmijica
                     break;
                 }
             }
-
             //kolizija sa zidom?
             foreach (Point wall in walls.ToList())
             {
@@ -298,13 +359,24 @@ namespace Zmijica
             bool isDead = false;
             List<Point> snakePosition = snake.getPosition();
             //moze umrijet da se zabi u sebe
-            foreach (Point snakeBody in snakePosition.ToList())
+            //dodajem if koj ce napravit da na svakom levelu bude nekoliko polja za koja nije frka ak se zmij zabije sama u sebe
+            bool canPassThrough = false;
+            foreach (Point transparentPoint in transparentPoints)
             {
-                if (snakeBody == headPosition)
+                if (transparentPoint == headPosition)
                 {
-                    isDead = true;
+                    canPassThrough = true;
+                    break;
                 }
             }
+            if (!canPassThrough)
+                foreach (Point snakeBody in snakePosition.ToList())
+                {
+                    if (snakeBody == headPosition)
+                    {
+                        isDead = true;
+                    }
+                }
             //moze umrjet da se zabi u zid
             foreach (Point wall in walls.ToList())
             {
@@ -318,6 +390,7 @@ namespace Zmijica
                 direction.X = 0;
                 direction.Y = 0;
                 varijable.snakeAlive = false;
+                timestamp = 0;
             }
 
 
@@ -342,7 +415,7 @@ namespace Zmijica
                 snake.update(direction);    // kontrola zmije
             }
 
-            //generiraj otrov(ne smije bit u koliziji sa zidom, sa zmijom ili s drugim hranama
+            //generiraj otrov(ne smije bit u koliziji sa zidom, sa zmijom ili s drugim hranama)
             if (timestamp > 0 && varijable.snakeAlive && timestamp % (ulong)varijable.poisonInterval == 0)
             {
                 newPoisonFood(headPosition, snakePosition);
