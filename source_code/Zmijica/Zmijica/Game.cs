@@ -20,7 +20,7 @@ namespace Zmijica
         public bool snakeAlive = true;
 
         // težina igre
-        public int goalLength = 8;
+        public int goalLength = 2;
         public int poisonInterval = 20;
         public int poisonDamage = 3;
         public int FPS = 4;
@@ -186,7 +186,7 @@ namespace Zmijica
             if (varijable.score <= 0) varijable.snakeAlive = false;
 
             // provjera prelaska na novi stage
-            if (varijable.goalLength == snake.Length) LevelUp();
+            if (varijable.goalLength <= snake.Length) LevelUp();
             if (varijable.snakeAlive == false)
             {
                 timer1.Stop();
@@ -382,6 +382,8 @@ namespace Zmijica
         /// <param name="direction"></param>
         void TeleportToEdge(Point direction)
         {
+            if (OppositeDirection(direction, this.direction)) return;
+
             //? ovo kao prima direction znaci ako je isao u nekom smjeru, moze se pomakmnut do zida da zadrzi smjer kretanja? ok
 
             while (true)
@@ -437,6 +439,12 @@ namespace Zmijica
             }
         }
 
+        bool OppositeDirection(Point a, Point b)
+        {
+            if (a.X + b.X == 0 && a.Y + b.Y == 0) return true;
+            return false;
+        }
+
         /// <summary>
         /// Zmija preskače n polja u smjeru direction.
         /// Direction iz skupa {(-1,0),(1,0),(0,1),(0,-1)}
@@ -445,6 +453,8 @@ namespace Zmijica
         /// <param name="n"></param>
         void SkipN(Point direction, int n)
         {
+            if (OppositeDirection(direction, this.direction)) return;
+
             //TODO nemam pojma kak se ovo tesitra(poziva)
             for(int i = 0; i < n; i++)
             {
@@ -501,6 +511,8 @@ namespace Zmijica
         /// <param name="direction"></param>
         void TeleportToSelf(Point direction)
         {
+            if (OppositeDirection(direction, this.direction)) return;
+
             //? ovo kao prima direction znaci ako je isao u nekom smjeru, moze se pomakmnut do zida da zadrzi smjer kretanja? ok
 
             while (true)
@@ -566,7 +578,6 @@ namespace Zmijica
         {
             newLevel = true;
             timestamp = 0;
-            varijable.stage += 1;
 
             varijable.stage += 1;
             if((varijable.stage % 2) == 0) FPS = varijable.FPS + 2;    // poziv settera koji djeluje na timer forme
@@ -585,8 +596,8 @@ namespace Zmijica
             // za prelazak naa novi level dobiva se novi bodovni resurs
             varijable.score += varijable.level * varijable.goalLength * stage[varijable.stage].width * stage[varijable.stage].width;
 
-            stage[varijable.stage] = new Stage(varijable.stage);
-            GetScreen(stage[varijable.stage].width);
+            //stage[varijable.stage] = new Stage(varijable.stage);
+            //GetScreen(stage[varijable.stage].width);
 
             snake = new Snake(varijable.width); // nova zmijica na (3,3) //TODO ovo treba ovisiti o vrsti levela
             //DrawList(snake.getPosition(), Color.Green); // inicijalno crtanje zmije
