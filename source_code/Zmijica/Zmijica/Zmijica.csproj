@@ -79,9 +79,7 @@
     <Compile Include="HelpScreen.Designer.cs">
       <DependentUpon>HelpScreen.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainMenu.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="MainMenu.cs" />
     <Compile Include="MainMenu.Designer.cs">
       <DependentUpon>MainMenu.cs</DependentUpon>
     </Compile>

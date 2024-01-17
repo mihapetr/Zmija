@@ -10,8 +10,31 @@ using System.Windows.Forms;
 
 namespace Zmijica
 {
+    /// <summary>
+    /// Preference korisnika o kontrolama tipkovnice.
+    /// </summary>
+    public class ControlSettings
+    {
+        public Keys up, down, left, right, tpEdgeActivator, tpSelfActovator;
+        
+        /// <summary>
+        /// Postavlja default kontrole.
+        /// </summary>
+        public ControlSettings()
+        {
+            up = Keys.Up;
+            down = Keys.Down;
+            left = Keys.Left;
+            right = Keys.Right;
+            tpEdgeActivator = Keys.Shift;
+            tpSelfActovator = Keys.Space;
+        }
+    }
+
     public partial class MainMenu : Form
     {
+        ControlSettings cSettings = new ControlSettings();
+
         public MainMenu()
         {
             InitializeComponent();
@@ -19,7 +42,7 @@ namespace Zmijica
 
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-            Game game = new Game();
+            Game game = new Game(cSettings);
             this.Hide();
             game.ShowDialog();
             this.Show();
@@ -27,7 +50,7 @@ namespace Zmijica
 
         private void buttonOptions_Click(object sender, EventArgs e)
         {
-            OptionsScreen options = new OptionsScreen();
+            OptionsScreen options = new OptionsScreen(cSettings);
             this.Hide();
             options.ShowDialog();
             this.Show();
@@ -48,7 +71,7 @@ namespace Zmijica
 
         private void button1_Click(object sender, EventArgs e)
         {
-            GameVersus game = new GameVersus();
+            GameVersus game = new GameVersus(cSettings);
             this.Hide();
             game.ShowDialog();
             this.Show();
@@ -56,7 +79,7 @@ namespace Zmijica
 
         private void button2_Click(object sender, EventArgs e)
         {
-            GameVersus game = new GameVersus();
+            GameVersus game = new GameVersus(cSettings);
             this.Hide();
             game.ShowDialog();
             this.Show();
