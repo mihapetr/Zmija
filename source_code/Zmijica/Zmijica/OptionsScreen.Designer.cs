@@ -188,7 +188,7 @@
             this.buttonPlay.BackColor = System.Drawing.Color.ForestGreen;
             this.buttonPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonPlay.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.buttonPlay.Location = new System.Drawing.Point(147, 567);
+            this.buttonPlay.Location = new System.Drawing.Point(159, 567);
             this.buttonPlay.Margin = new System.Windows.Forms.Padding(4);
             this.buttonPlay.Name = "buttonPlay";
             this.buttonPlay.Size = new System.Drawing.Size(96, 27);
