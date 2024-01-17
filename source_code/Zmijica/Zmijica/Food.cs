@@ -10,6 +10,7 @@ namespace Zmijica
     {
         standard,
         poison,
+        random,
         noFood
     }
 }

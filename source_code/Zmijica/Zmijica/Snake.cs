@@ -13,6 +13,7 @@ namespace Zmijica
     {
         string name = "Luigi";
         int width;
+        Random r = new Random();
         //koristim List i nadam se da tu zadrzi poredak elemenata(first je glava, last je rep)
         private List<Point> position
         {
@@ -55,9 +56,11 @@ namespace Zmijica
         }
 
         //da se ovo napravi kak treba treba prvo napravit enum za vrste hrane pa prema tome slozit update
-        public void update(Point newDir, Food food = Food.noFood, int damage = 0)
+        //vraca int zbog random hrane, ako zmija moze proci kroz sebe vrati 1(pozitivno), ako se krece za dva mjesta vrati 2(negativno)
+        //inace vrati 0 (nebitno)
+        public int update(Point newDir, Food food = Food.noFood, int damage = 0)
         {
-            if (newDir.X == 0 && newDir.Y == 0) return;
+            if (newDir.X == 0 && newDir.Y == 0) return 0;
 
             //za pocetak moze samo genericno, dohvati glavu i smjer i dodaj prikladni element, makni zadnji
             Point newHeadPosition = this.headPosition();
@@ -83,11 +86,21 @@ namespace Zmijica
 
                     }
                     break;
+                case Food.random:
+                    position.Insert(0, newHeadPosition);
+                    position.RemoveAt(position.Count - 1);
+                    //uvest random 70/30 sansu da
+                    //ili zmija moze proc sama kroz sebe
+                    int odds = r.Next(0, 100);
+                    if(odds < 70) return 1;
+                    //ili zmija se krece za dva polja
+                    else return 2;
                 default:
                     position.Insert(0, newHeadPosition);
                     position.RemoveAt(position.Count - 1);
                     break;
             }
+            return 0;
         }
     }
 }
