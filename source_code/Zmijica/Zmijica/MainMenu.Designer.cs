@@ -36,9 +36,10 @@
             // 
             // buttonPlay
             // 
-            this.buttonPlay.BackColor = System.Drawing.Color.White;
+            this.buttonPlay.BackColor = System.Drawing.Color.ForestGreen;
             this.buttonPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonPlay.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.buttonPlay.ForeColor = System.Drawing.Color.Indigo;
             this.buttonPlay.Location = new System.Drawing.Point(312, 266);
             this.buttonPlay.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonPlay.Name = "buttonPlay";
@@ -50,9 +51,10 @@
             // 
             // buttonOptions
             // 
-            this.buttonOptions.BackColor = System.Drawing.Color.White;
+            this.buttonOptions.BackColor = System.Drawing.Color.ForestGreen;
             this.buttonOptions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonOptions.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.buttonOptions.ForeColor = System.Drawing.Color.Indigo;
             this.buttonOptions.Location = new System.Drawing.Point(312, 329);
             this.buttonOptions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonOptions.Name = "buttonOptions";
@@ -64,9 +66,10 @@
             // 
             // buttonExit
             // 
-            this.buttonExit.BackColor = System.Drawing.Color.White;
+            this.buttonExit.BackColor = System.Drawing.Color.ForestGreen;
             this.buttonExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonExit.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.buttonExit.ForeColor = System.Drawing.Color.Indigo;
             this.buttonExit.Location = new System.Drawing.Point(312, 453);
             this.buttonExit.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonExit.Name = "buttonExit";
@@ -78,9 +81,10 @@
             // 
             // buttonHelp
             // 
-            this.buttonHelp.BackColor = System.Drawing.Color.White;
+            this.buttonHelp.BackColor = System.Drawing.Color.ForestGreen;
             this.buttonHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonHelp.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.buttonHelp.ForeColor = System.Drawing.Color.Indigo;
             this.buttonHelp.Location = new System.Drawing.Point(312, 390);
             this.buttonHelp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonHelp.Name = "buttonHelp";
@@ -95,6 +99,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.BackgroundImage = global::Zmijica.Properties.Resources.kobre;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(779, 838);
             this.Controls.Add(this.buttonHelp);
             this.Controls.Add(this.buttonExit);
