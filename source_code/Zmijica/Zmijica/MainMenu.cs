@@ -53,5 +53,13 @@ namespace Zmijica
             game.ShowDialog();
             this.Show();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            GameVersus game = new GameVersus();
+            this.Hide();
+            game.ShowDialog();
+            this.Show();
+        }
     }
 }
