@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Zmijica
 {
-
+    #region Metavarijable
     /// <summary>
     /// Meta varijable. Svaka instanca Game ima svoju instancu.
     /// </summary>
@@ -32,6 +32,8 @@ namespace Zmijica
         public int level = 1;
     }
 
+    #endregion
+
     internal class Game : GameForm
     {
         #region Konstruktor 
@@ -44,10 +46,10 @@ namespace Zmijica
 
         #endregion
 
-        // ---------------------------- VARIJABLE -------------------------------
+        #region Varijable
 
         List<Point> walls = new List<Point>();    // sadrži koordinate zida
-        Stage[] stage = new Stage[4];
+        Stage[] stage = new Stage[4];       // sadrži informacije o zidovima
 
         Snake snake;
         List<Tuple<Point, Food>> foodPosition;
@@ -61,15 +63,30 @@ namespace Zmijica
         // (stalno sam gubio jer iznenada krene u novi level)
         bool newLevel = false;
 
-        // -------------------------- TESTNE VARIJABLE ---------------------------
-        // ovamo stvari koje se testiraju
+        // varijable za kontorlu zmije
 
+        Keys tpEdgeActivator, tpSelfActivator;   // aktivatori za specijalne pokrete
+        Keys up, down, left, right;  // generalne kontrole
+        bool tpEdge, skipN, tpSelf;     // jesu li kretnje aktivirane posebnim tipkama
+        int skipAmount;
 
+        #endregion
 
-        // ----------------------- Setup, Draw, KeyPressed ----------------------------------
+        #region Testne varijable
+
+        #endregion
+
+        #region Setup, Draw, KeyPressed, KeyReleased
 
         public override void Setup() 
         {
+            // default kontrole
+            up = Keys.W;
+            down = Keys.S;
+            left = Keys.A;
+            right = Keys.D;
+            tpEdgeActivator = Keys.Space;
+            tpSelfActivator = Keys.Shift;
 
             // inicijalizacija svih polja za igru
             // tako osiguravamo brzi prelazak
@@ -176,19 +193,96 @@ namespace Zmijica
                 (new GameOverForm(varijable.score)).ShowDialog();
                 Close();
             }
+
+            // indikator korisniku da su uključeni aktivatori za specijalne kretnje
+            labelSkipAmount.Text = skipAmount.ToString();
+            labelSkipAmount.ForeColor = skipN ? Color.Yellow : Color.Black;
+            if (tpSelf) pictureBox.BackColor = Color.Green;
+            else if (tpEdge) pictureBox.BackColor = Color.Purple;
+            else pictureBox.BackColor = Color.Black;
         }
 
         public override void KeyPressed()
         {
-            switch (KeyCode)
+
+            if(KeyCode == up)
             {
-                case Keys.W:
-                case Keys.Up:
-                    if (newLevel)
-                    {
-                        newLevel = false;
-                        break;
-                    }
+                if (newLevel)
+                {
+                    newLevel = false;
+                    return;
+                }
+                if (ActivateTp(new Point(0,-1))) return;
+                // default ponašanje : skretanje
+                else if (direction.Y == 1 && direction.X == 0) return;
+                newDirection.Y = -1;
+                newDirection.X = 0;
+            } 
+            else if(KeyCode == down)
+            {
+                if (newLevel)
+                {
+                    newLevel = false;
+                    return;
+                }
+                if (ActivateTp(new Point(0,1))) return;
+                // default ponašanje : skretanje
+                else if (direction.Y == -1 && direction.X == 0) return;
+                newDirection.Y = 1;
+                newDirection.X = 0;
+            } 
+            else if(KeyCode == left)
+            {
+                if (newLevel)
+                {
+                    newLevel = false;
+                    return;
+                }
+                if (ActivateTp(new Point(-1,0))) return;
+                // default ponašanje : skretanje
+                else if (direction.Y == 0 && direction.X == 1) return;
+                newDirection.Y = 0;
+                newDirection.X = -1;
+            } 
+            else if(KeyCode == right)
+            {
+                if (newLevel)
+                {
+                    newLevel = false;
+                    return;
+                }
+                if (ActivateTp(new Point(1,0))) return;
+                // default ponašanje : skretanje
+                else if (direction.Y == 0 && direction.X == -1) return;
+                newDirection.Y = 0;
+                newDirection.X = 1;
+            }
+
+            // posebne kretnje
+
+            else if(KeyCode == tpEdgeActivator || ModifierKeys == tpEdgeActivator)
+            {
+                skipN = false; tpSelf = false;  // ostale deaktiviramo
+                tpEdge = true;
+            }
+            else if (KeyCode == tpSelfActivator || ModifierKeys == tpSelfActivator)
+            {
+                skipN = false; tpEdge = false; // ostale deaktiviramo
+                tpSelf = true;
+                pictureBox.BackColor = Color.Green;
+            }
+            else if (KeyCode >= Keys.NumPad1 && KeyCode <= Keys.NumPad9)
+            {
+                skipAmount = (int)KeyCode - (int)Keys.NumPad0;
+                tpSelf = false; tpEdge = false; // ostale deaktiviramo
+                skipN = true;
+            }
+
+            /*switch (KeyCode)
+            {
+                //case Keys.W:
+                //case Keys.Up:
+                case up:
                     if (direction.Y == 1 && direction.X == 0) break;
                     newDirection.Y = -1;
                     newDirection.X = 0;
@@ -196,43 +290,277 @@ namespace Zmijica
 
                 case Keys.S:
                 case Keys.Down:
-                    if (newLevel)
-                    {
-                        newLevel = false;
-                        break;
-                    }
                     if (direction.Y == -1 && direction.X == 0) break;
                     newDirection.Y = 1;
                     newDirection.X = 0;
                     break;
 
-                case Keys.A:
-                case Keys.Left:
-                    if (newLevel)
-                    {
-                        newLevel = false;
-                        break;
-                    }
+                //case Keys.A:
+                //case Keys.Left:
+                case "left":
                     if (direction.Y == 0 && direction.X == 1) break;
                     newDirection.Y = 0;
                     newDirection.X = -1;
                     break;
 
-                case Keys.D:
-                case Keys.Right:
-                    if (newLevel)
-                    {
-                        newLevel = false;
-                        break;
-                    }
+                //case Keys.D:
+                //case Keys.Right:
+                case "right":
                     if (direction.Y == 0 && direction.X == -1) break;
                     newDirection.Y = 0;
                     newDirection.X = 1;
                     break;
+
+                case "teleport":
+                    Teleport(varijable.tpDirection);
+                    break;
+
+                case ""
+
+                default:
+                    break;
+            }*/
+        }
+
+        public override void KeyReleased()
+        {
+            //if (ModifierKeys != Keys.Shift) tpSelf = false;
+
+            if (KeyCode == tpEdgeActivator)
+            {
+                tpEdge = false;
+            }
+            else if (KeyCode == tpSelfActivator)
+            {
+                tpSelf = false;
+            }
+            else if (KeyCode >= Keys.NumPad1 && KeyCode <= Keys.NumPad9)
+            // otpušten je broj na tipkovnici
+            {
+                skipN = false;
+            }
+            if(ModifierKeys != tpSelfActivator && ModifierKeys != tpEdgeActivator)
+            {
+                tpSelf = tpEdge = false;
             }
         }
 
-        // ------------------- POMOĆNE FUNKCIJE --------------------------------
+        #endregion
+
+        #region Pomoćne funkcije
+
+        /// <summary>
+        /// Provjerava hoće li zmijica koristiti posebne kontrole
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <returns></returns>
+        bool ActivateTp(Point dir)
+        {
+            if(tpSelf)
+            {
+                TeleportToSelf(dir);
+                return true;
+            }
+            else if(tpEdge)
+            {
+                TeleportToEdge(dir);
+                return true;
+            }
+            else if(skipN)
+            {
+                SkipN(dir, skipAmount);
+                return true;
+            }
+
+            return false;   // daje znak da je default ponašanje u pitanju
+        }
+
+        /// <summary>
+        /// Zmija ide do ruba u smjeru direction.
+        /// Direction iz skupa {(-1,0),(1,0),(0,1),(0,-1)}
+        /// </summary>
+        /// <param name="direction"></param>
+        void TeleportToEdge(Point direction)
+        {
+            //? ovo kao prima direction znaci ako je isao u nekom smjeru, moze se pomakmnut do zida da zadrzi smjer kretanja? ok
+
+            while (true)
+            {
+                //gdje ce se pomaknut u sljedecem otkucaju
+                Point headPosition = snake.headPosition();
+                headPosition.X += direction.X;
+                headPosition.Y += direction.Y;
+                List<Point> snakePosition = snake.getPosition();
+                if (headPosition.X == -1 || headPosition.Y == -1 || headPosition.X == varijable.width || headPosition.Y == varijable.width)
+                    return;
+
+                    foreach (Point wall in walls)
+                {
+                    if (headPosition == wall)
+                        return;
+                }
+
+                if (snakeDying(headPosition, snakePosition))
+                {
+                    direction.X = 0;
+                    direction.Y = 0;
+                    varijable.snakeAlive = false;
+                    timestamp = 0;
+                }
+
+                //provjeri je li zmija u koliziji s hranom
+                bool hasEaten = false;
+                foreach (Tuple<Point, Food> food in foodPosition.ToList())
+                {
+                    if (food.Item1 == headPosition)
+                    {
+                        snake.update(direction, food.Item2, varijable.poisonDamage);
+                        foodPosition.Remove(food);
+                        hasEaten = true;
+                        if (food.Item2 == Food.standard)
+                        {
+                            newStandardFood(headPosition, snakePosition);
+                        }
+                    }
+                }
+
+                if (!hasEaten)
+                {
+                    snake.update(direction);    // kontrola zmije
+                }
+
+                //generiraj otrov(ne smije bit u koliziji sa zidom, sa zmijom ili s drugim hranama)
+                if (timestamp > 0 && varijable.snakeAlive && timestamp % (ulong)varijable.poisonInterval == 0)
+                {
+                    newPoisonFood(headPosition, snakePosition);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Zmija preskače n polja u smjeru direction.
+        /// Direction iz skupa {(-1,0),(1,0),(0,1),(0,-1)}
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="n"></param>
+        void SkipN(Point direction, int n)
+        {
+            //TODO nemam pojma kak se ovo tesitra(poziva)
+            for(int i = 0; i < n; i++)
+            {
+                //gdje ce se pomaknut u sljedecem otkucaju
+                Point headPosition = snake.headPosition();
+                headPosition.X += direction.X;
+                headPosition.Y += direction.Y;
+                List<Point> snakePosition = snake.getPosition();
+                if (headPosition.X == -1 || headPosition.Y == -1 || headPosition.X == varijable.width || headPosition.Y == varijable.width)
+                    return;
+
+                if (snakeDying(headPosition, snakePosition))
+                {
+                    direction.X = 0;
+                    direction.Y = 0;
+                    varijable.snakeAlive = false;
+                    timestamp = 0;
+                }
+
+                //provjeri je li zmija u koliziji s hranom
+                bool hasEaten = false;
+                foreach (Tuple<Point, Food> food in foodPosition.ToList())
+                {
+                    if (food.Item1 == headPosition)
+                    {
+                        snake.update(direction, food.Item2, varijable.poisonDamage);
+                        foodPosition.Remove(food);
+                        hasEaten = true;
+                        if (food.Item2 == Food.standard)
+                        {
+                            newStandardFood(headPosition, snakePosition);
+                        }
+                    }
+                }
+
+                if (!hasEaten)
+                {
+                    snake.update(direction);    // kontrola zmije
+                }
+
+                //generiraj otrov(ne smije bit u koliziji sa zidom, sa zmijom ili s drugim hranama)
+                if (timestamp > 0 && varijable.snakeAlive && timestamp % (ulong)varijable.poisonInterval == 0)
+                {
+                    newPoisonFood(headPosition, snakePosition);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Zmija se teleportira do sebe u smjeru direction.
+        /// Što ako u tom smjeru nema zmije? Ništa se ne događa.
+        /// Direction iz skupa {(-1,0),(1,0),(0,1),(0,-1)}
+        /// </summary>
+        /// <param name="direction"></param>
+        void TeleportToSelf(Point direction)
+        {
+            //? ovo kao prima direction znaci ako je isao u nekom smjeru, moze se pomakmnut do zida da zadrzi smjer kretanja? ok
+
+            while (true)
+            {
+                //gdje ce se pomaknut u sljedecem otkucaju
+                Point headPosition = snake.headPosition();
+                headPosition.X += direction.X;
+                headPosition.Y += direction.Y;
+                List<Point> snakePosition = snake.getPosition();
+                if (headPosition.X == -1 || headPosition.Y == -1 || headPosition.X == varijable.width || headPosition.Y == varijable.width)
+                    return;
+
+                foreach (Point wall in walls)
+                {
+                    if (headPosition == wall)
+                        return;
+                }
+
+                foreach (Point snake in snakePosition)
+                {
+                    if (headPosition == snake)
+                        return;
+                }
+
+                if (snakeDying(headPosition, snakePosition))
+                {
+                    direction.X = 0;
+                    direction.Y = 0;
+                    varijable.snakeAlive = false;
+                    timestamp = 0;
+                }
+
+                //provjeri je li zmija u koliziji s hranom
+                bool hasEaten = false;
+                foreach (Tuple<Point, Food> food in foodPosition.ToList())
+                {
+                    if (food.Item1 == headPosition)
+                    {
+                        snake.update(direction, food.Item2, varijable.poisonDamage);
+                        foodPosition.Remove(food);
+                        hasEaten = true;
+                        if (food.Item2 == Food.standard)
+                        {
+                            newStandardFood(headPosition, snakePosition);
+                        }
+                    }
+                }
+
+                if (!hasEaten)
+                {
+                    snake.update(direction);    // kontrola zmije
+                }
+
+                //generiraj otrov(ne smije bit u koliziji sa zidom, sa zmijom ili s drugim hranama)
+                if (timestamp > 0 && varijable.snakeAlive && timestamp % (ulong)varijable.poisonInterval == 0)
+                {
+                    newPoisonFood(headPosition, snakePosition);
+                }
+            }
+        }
 
         void LevelUp()
         {
@@ -240,15 +568,15 @@ namespace Zmijica
             timestamp = 0;
             varijable.stage += 1;
 
+            varijable.stage += 1;
+            if((varijable.stage % 2) == 0) FPS = varijable.FPS + 2;    // poziv settera koji djeluje na timer forme
             if (varijable.stage == 4)   // povećanje levela != povećanje stage-a
             {
                 varijable.stage = 1;
                 varijable.level += 1;
 
                 // otežanje igre
-                FPS = varijable.FPS + 1;    // poziv settera koji djeluje na timer forme
-                varijable.poisonDamage += 1;
-                varijable.goalLength += 2;
+                varijable.poisonDamage += 1; 
             }
 
             //nakon sto se ovdje inicijalizira treba uvijek korist varijable.width, ovak je neuredno
@@ -341,23 +669,10 @@ namespace Zmijica
                 }
             }
         }
-        //nez jel ovo treba bit neki override
-        private void updateGame()
+        private bool snakeDying(Point headPosition, List<Point> snakePosition)
         {
-            //TODO mozda maknut event listenere dok se ova funkcija izvrsava
-            direction = newDirection;
-
-            if (direction.X == 0 && direction.Y == 0) return;
-
-            timestamp++;
-            //gdje ce se pomaknut u sljedecem otkucaju
-            Point headPosition = snake.headPosition();
-            headPosition.X += direction.X;
-            headPosition.Y += direction.Y;
-
             //provjeri je li zmija u koliziji sama sa sobom
             bool isDead = false;
-            List<Point> snakePosition = snake.getPosition();
             //moze umrijet da se zabi u sebe
             //dodajem if koj ce napravit da na svakom levelu bude nekoliko polja za koja nije frka ak se zmij zabije sama u sebe
             bool canPassThrough = false;
@@ -385,14 +700,30 @@ namespace Zmijica
                     isDead = true;
                 }
             }
-            if (isDead == true)
+            return isDead;
+        }
+        private void updateGame()
+        {
+            //TODO mozda maknut event listenere dok se ova funkcija izvrsava
+            direction = newDirection;
+
+            if (direction.X == 0 && direction.Y == 0) return;
+
+            timestamp++;
+            //gdje ce se pomaknut u sljedecem otkucaju
+            Point headPosition = snake.headPosition();
+            headPosition.X += direction.X;
+            headPosition.Y += direction.Y;
+            List<Point> snakePosition = snake.getPosition();
+
+
+            if (snakeDying(headPosition, snakePosition))
             {
                 direction.X = 0;
                 direction.Y = 0;
                 varijable.snakeAlive = false;
                 timestamp = 0;
             }
-
 
             //provjeri je li zmija u koliziji s hranom
             bool hasEaten = false;
@@ -421,5 +752,7 @@ namespace Zmijica
                 newPoisonFood(headPosition, snakePosition);
             }
         }
+
+        #endregion
     }
 }

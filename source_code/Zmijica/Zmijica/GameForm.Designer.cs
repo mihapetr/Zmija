@@ -40,7 +40,10 @@ namespace Zmijica
             this.labelLevel = new System.Windows.Forms.Label();
             this.labelStage = new System.Windows.Forms.Label();
             this.screenContainer = new System.Windows.Forms.TableLayoutPanel();
+            this.pictureBox = new System.Windows.Forms.PictureBox();
+            this.labelSkipAmount = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -130,12 +133,33 @@ namespace Zmijica
             this.screenContainer.Size = new System.Drawing.Size(600, 720);
             this.screenContainer.TabIndex = 4;
             // 
+            // pictureBox
+            // 
+            this.pictureBox.Location = new System.Drawing.Point(283, 648);
+            this.pictureBox.Name = "pictureBox";
+            this.pictureBox.Size = new System.Drawing.Size(25, 24);
+            this.pictureBox.TabIndex = 4;
+            this.pictureBox.TabStop = false;
+            // 
+            // labelSkipAmount
+            // 
+            this.labelSkipAmount.AutoSize = true;
+            this.labelSkipAmount.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelSkipAmount.ForeColor = System.Drawing.Color.Gold;
+            this.labelSkipAmount.Location = new System.Drawing.Point(314, 648);
+            this.labelSkipAmount.Name = "labelSkipAmount";
+            this.labelSkipAmount.Size = new System.Drawing.Size(20, 24);
+            this.labelSkipAmount.TabIndex = 5;
+            this.labelSkipAmount.Text = "9";
+            // 
             // GameForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(584, 681);
+            this.Controls.Add(this.labelSkipAmount);
+            this.Controls.Add(this.pictureBox);
             this.Controls.Add(this.labelStage);
             this.Controls.Add(this.labelLevel);
             this.Controls.Add(this.labelLength);
@@ -145,12 +169,14 @@ namespace Zmijica
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "GameForm";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Zmijica";
             this.Load += new System.EventHandler(this.Form2_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GameForm_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.GameForm_KeyUp);
             this.tableLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -166,5 +192,7 @@ namespace Zmijica
         protected Label labelLevel;
         protected Label labelStage;
         protected TableLayoutPanel screenContainer;
+        protected PictureBox pictureBox;
+        protected Label labelSkipAmount;
     }
 }
