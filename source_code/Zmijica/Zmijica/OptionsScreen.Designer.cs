@@ -42,7 +42,6 @@
             this.labelEdge = new System.Windows.Forms.Label();
             this.labelSelf = new System.Windows.Forms.Label();
             this.buttonPlay = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -212,7 +211,7 @@
             this.buttonPlay.BackColor = System.Drawing.Color.ForestGreen;
             this.buttonPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonPlay.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.buttonPlay.Location = new System.Drawing.Point(159, 567);
+            this.buttonPlay.Location = new System.Drawing.Point(218, 567);
             this.buttonPlay.Margin = new System.Windows.Forms.Padding(4);
             this.buttonPlay.Name = "buttonPlay";
             this.buttonPlay.Size = new System.Drawing.Size(96, 27);
@@ -221,26 +220,12 @@
             this.buttonPlay.UseVisualStyleBackColor = false;
             this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
             // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.Color.ForestGreen;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button1.Location = new System.Drawing.Point(330, 567);
-            this.button1.Margin = new System.Windows.Forms.Padding(4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(96, 27);
-            this.button1.TabIndex = 20;
-            this.button1.Text = "save";
-            this.button1.UseVisualStyleBackColor = false;
-            // 
             // OptionsScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(584, 681);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.buttonPlay);
             this.Controls.Add(this.labelSelf);
             this.Controls.Add(this.labelEdge);
@@ -282,6 +267,5 @@
         protected System.Windows.Forms.Label labelEdge;
         protected System.Windows.Forms.Label labelSelf;
         protected System.Windows.Forms.Button buttonPlay;
-        protected System.Windows.Forms.Button button1;
     }
 }
