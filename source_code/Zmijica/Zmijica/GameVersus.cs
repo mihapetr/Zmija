@@ -94,7 +94,6 @@ namespace Zmijica
             snake = new Snake(varijable.width);
             snakeAI = new SnakeAI(varijable.width);
         }
-
         public override void Draw()
         {
 
@@ -185,7 +184,6 @@ namespace Zmijica
             else if (tpEdge) pictureBox.BackColor = Color.Purple;
             else pictureBox.BackColor = BackColor;
         }
-
         public override void KeyPressed()
         {
 
@@ -238,51 +236,7 @@ namespace Zmijica
                 tpSelf = false; tpEdge = false; // ostale deaktiviramo
                 skipN = true;
             }
-
-            /*switch (KeyCode)
-            {
-                //case Keys.W:
-                //case Keys.Up:
-                case up:
-                    if (direction.Y == 1 && direction.X == 0) break;
-                    newDirection.Y = -1;
-                    newDirection.X = 0;
-                    break;
-
-                case Keys.S:
-                case Keys.Down:
-                    if (direction.Y == -1 && direction.X == 0) break;
-                    newDirection.Y = 1;
-                    newDirection.X = 0;
-                    break;
-
-                //case Keys.A:
-                //case Keys.Left:
-                case "left":
-                    if (direction.Y == 0 && direction.X == 1) break;
-                    newDirection.Y = 0;
-                    newDirection.X = -1;
-                    break;
-
-                //case Keys.D:
-                //case Keys.Right:
-                case "right":
-                    if (direction.Y == 0 && direction.X == -1) break;
-                    newDirection.Y = 0;
-                    newDirection.X = 1;
-                    break;
-
-                case "teleport":
-                    Teleport(varijable.tpDirection);
-                    break;
-
-                case ""
-
-                default:
-                    break;
-            }*/
         }
-
         public override void KeyReleased()
         {
             //if (ModifierKeys != Keys.Shift) tpSelf = false;
@@ -309,7 +263,15 @@ namespace Zmijica
         #endregion
 
         #region Pomoćne funkcije
-
+        /// <summary>
+        /// Ispituje je li pozicija slobodna za generiranje nove hrane
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="snakeHeadPosition"></param>
+        /// <param name="snakePosition"></param>
+        /// <param name="snakeAIHeadPosition"></param>
+        /// <param name="snakeAIPosition"></param>
+        /// <returns>bool</returns>
         private bool isLegalFoodPosition(Point position, Point snakeHeadPosition, List<Point> snakePosition, Point snakeAIHeadPosition, List<Point> snakeAIPosition)
         {
             bool isLegalPosition = true;
@@ -335,6 +297,13 @@ namespace Zmijica
             if (isLegalPosition) return true;
             else return false;
         }
+        /// <summary>
+        /// Generira novu hranu tipa standard
+        /// </summary>
+        /// <param name="snakeHeadPosition"></param>
+        /// <param name="snakePosition"></param>
+        /// <param name="snakeAIHeadPosition"></param>
+        /// <param name="snakeAIPosition"></param>
         private void newStandardFood(Point snakeHeadPosition, List<Point> snakePosition, Point snakeAIHeadPosition, List<Point> snakeAIPosition)
         {
             //generiraj dok se ne nade dozvoljena pozicija
@@ -350,6 +319,13 @@ namespace Zmijica
                 }
             }
         }
+        /// <summary>
+        /// Ispituje hoce li zmija umrijeti na zadanoj poziciji
+        /// </summary>
+        /// <param name="snakeHeadPosition"></param>
+        /// <param name="snakePosition"></param>
+        /// <param name="snakeAIPosition"></param>
+        /// <returns>bool</returns>
         private bool snakeDying(Point snakeHeadPosition, List<Point> snakePosition, List<Point> snakeAIPosition)
         {
             //provjeri je li zmija u koliziji sama sa sobom
@@ -386,6 +362,13 @@ namespace Zmijica
             }
             return isDead;
         }
+        /// <summary>
+        /// Ispituje hoce li zmija koju upravlja racunalo umrijeti na zadanoj poziciji
+        /// </summary>
+        /// <param name="snakeAIHeadPosition"></param>
+        /// <param name="snakeAIPosition"></param>
+        /// <param name="snakePosition"></param>
+        /// <returns>bool</returns>
         private bool snakeAIDying(Point snakeAIHeadPosition, List<Point> snakeAIPosition, List<Point> snakePosition)
         {
             //provjeri je li zmija u koliziji sama sa sobom
@@ -422,6 +405,9 @@ namespace Zmijica
             }
             return isDead;
         }
+        /// <summary>
+        /// Azurira igru za jedan vremenski otkucaj kada je igraceva zmija na potezu
+        /// </summary>
         private void updateGame()
         {
             //TODO mozda maknut event listenere dok se ova funkcija izvrsava
@@ -465,7 +451,9 @@ namespace Zmijica
                 snake.update(direction);    // kontrola zmije
             }
         }
-
+        /// <summary>
+        /// Azurira igru za jedan vremenski otkucaj kada je zmija kojom upravlja racunalo na potezu
+        /// </summary>
         private void updateGameAI()
         {
             timestamp++;

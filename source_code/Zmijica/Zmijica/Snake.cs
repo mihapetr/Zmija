@@ -11,28 +11,28 @@ namespace Zmijica
 {
     internal class Snake
     {
-        string name = "Luigi";
         int width;
         Random r = new Random();
-        //koristim List i nadam se da tu zadrzi poredak elemenata(first je glava, last je rep)
         private List<Point> position
         {
             get;
             set;
         }
-
         public int Length
         {
             get { return position.Count; }
         }
-
-
         public Point direction
         {
             get;
             set;
         }
-
+        /// <summary>
+        /// Konstruktor
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public Snake(int width, int x = 3, int y = 3)
         {
             this.width = width;
@@ -41,23 +41,38 @@ namespace Zmijica
             position.Insert(0, new Point(x, y));
             direction = new Point(0, 0);
         }
-
+        /// <summary>
+        /// Vraca pozicije koje zmija zauzima
+        /// </summary>
         public List<Point> getPosition()
         {
             return position;
         }
+        /// <summary>
+        /// Vraca pozicije glave zmije
+        /// </summary>
         public Point headPosition()
         {
             return position.First();
         }
+        /// <summary>
+        /// Vraca pozicije repa zmije (zadmnju poziciju)
+        /// </summary>
         public Point tailPosition()
         {
             return position.Last();
         }
-
-        //da se ovo napravi kak treba treba prvo napravit enum za vrste hrane pa prema tome slozit update
-        //vraca int zbog random hrane, ako zmija moze proci kroz sebe vrati 1(pozitivno), ako se krece za dva mjesta vrati 2(negativno)
-        //inace vrati 0 (nebitno)
+        /// <summary>
+        /// Azurira poziciju zmije za jedan otkucaj
+        /// </summary>
+        /// <param name="newDir"></param>
+        /// <param name="food"></param>
+        /// <param name="damage"></param>
+        /// <returns>
+        /// 1 ako je zmija pojela random hranu i uzinak je bio pozitivan
+        /// 2 ako je zmija pojela random hranu i uzinak je bio negativan
+        /// 0 inace
+        /// </returns>
         public int update(Point newDir, Food food = Food.noFood, int damage = 0)
         {
             if (newDir.X == 0 && newDir.Y == 0) return 0;
