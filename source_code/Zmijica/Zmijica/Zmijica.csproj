@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SnakeAI.cs" />
     <Compile Include="Food.cs" />
     <Compile Include="GameOverForm.cs">
       <SubType>Form</SubType>

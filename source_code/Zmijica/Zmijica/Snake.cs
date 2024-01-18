@@ -90,9 +90,9 @@ namespace Zmijica
                     position.Insert(0, newHeadPosition);
                     position.RemoveAt(position.Count - 1);
                     //uvest random 70/30 sansu da
-                    //ili zmija moze proc sama kroz sebe
                     int odds = r.Next(0, 100);
-                    if(odds < 70) return 1;
+                    //ili zmija moze proc sama kroz sebe
+                    if (odds < 70) return 1;
                     //ili zmija se krece za dva polja
                     else return 2;
                 default:

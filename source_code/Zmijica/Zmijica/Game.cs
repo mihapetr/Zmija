@@ -18,6 +18,7 @@ namespace Zmijica
         // tehnički detalji
         public int width = 10;
         public bool snakeAlive = true;
+        public bool snakeAIAlive = true;
 
         // težina igre
         public int goalLength = 8;
@@ -42,7 +43,7 @@ namespace Zmijica
         public void vsModeInit()
         {
             width = 30;
-            FPS = 5;
+            FPS = 10;
             poisonDamage = 4;
             poisonInterval = 20;
             randomInterval = 5;
@@ -176,7 +177,7 @@ namespace Zmijica
             {
                 if (food.Item2 == Food.random) randomFood.Insert(0, food.Item1);
             }
-            DrawList(randomFood, Color.MediumPurple);
+            DrawList(randomFood, Color.RosyBrown);
 
             // crtanje zmije
             List<Point> snakePoints = snake.getPosition();
