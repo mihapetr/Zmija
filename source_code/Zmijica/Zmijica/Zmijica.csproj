@@ -69,6 +69,7 @@
     <Compile Include="ControlsChange.Designer.cs">
       <DependentUpon>ControlsChange.cs</DependentUpon>
     </Compile>
+    <Compile Include="SnakeAI.cs" />
     <Compile Include="Food.cs" />
     <Compile Include="GameOverForm.cs">
       <SubType>Form</SubType>

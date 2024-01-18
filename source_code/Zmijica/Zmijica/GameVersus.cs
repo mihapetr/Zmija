@@ -22,20 +22,17 @@ namespace Zmijica
 
         #region Varijable
 
-        List<Point> walls = new List<Point>();    // sadrži koordinate zida
         Stage[] stage = new Stage[4];       // sadrži informacije o zidovima
 
         Snake snake;
+        SnakeAI snakeAI;
         List<Tuple<Point, Food>> foodPosition;
-        Point direction = new Point(0, 0);    // testne kontrole //!mislim da ne treba(init smjer zmijice na 0,0)
-        Point newDirection = new Point(0, 0);    // testne kontrole //!mislim da ne treba(init smjer zmijice na 0,0)
+        Point direction = new Point(0, 0);
+        Point newDirection = new Point(0, 0);
         Tuple<Point, Food> newFood;
         ulong timestamp;
         Random r = new Random();
         List<Point> transparentPoints;
-        // ovo sam stavio tak da kad krene novi level moras dva puta stisnut neku komandu prije nego se zmija krene kretat
-        // (stalno sam gubio jer iznenada krene u novi level)
-        bool newLevel = false;
 
         // varijable za kontorlu zmije
 
@@ -77,6 +74,7 @@ namespace Zmijica
             // food processing
             timestamp = 0;
             foodPosition = new List<Tuple<Point, Food>>();
+            //TODO nesto zanimljivije od 7,7
             newFood = new Tuple<Point, Food>(new Point(7, 7), Food.standard);
             foodPosition.Insert(0, newFood);
 
@@ -84,12 +82,17 @@ namespace Zmijica
 
             // napravio da je svaki level isti width pa moze bit ovdje
             transparentPoints = new List<Point>();
-            transparentPoints.Insert(0, new Point(3, 3));
-            transparentPoints.Insert(0, new Point(varijable.width - 4, 3));
-            transparentPoints.Insert(0, new Point(3, varijable.width - 4));
+            for(int i = 2; i < varijable.width; i += 4)
+            {
+                for(int j = 2; j < varijable.width; j += 4)
+                {
+                    transparentPoints.Insert(0, new Point(i, j));
+                }
+            }
 
-            snake = new Snake(varijable.width); // nova zmijica na (3,3) //TODO ovo treba ovisiti o vrsti levela
-            //if(timestamp == 0) DrawList(snake.getPosition(), Color.Green); // inicijalno crtanje zmije
+
+            snake = new Snake(varijable.width);
+            snakeAI = new SnakeAI(varijable.width);
         }
 
         public override void Draw()
@@ -97,10 +100,9 @@ namespace Zmijica
 
             // resetiranje pozadine
             ClearScreen();
-            DrawList(walls, Color.Purple);  // crta točke iz walls
-            updateGame();   // računi za frame
+            if(timestamp % 2 == 0) updateGame();   // računi za frame
+            else updateGameAI();   // računi za frame
 
-            transparentPoints.Insert(0, new Point(varijable.width - 4, varijable.width - 4));
             DrawList(transparentPoints, Color.DarkGray);
 
             // nacrtaj standardFood
@@ -110,15 +112,6 @@ namespace Zmijica
                 if (food.Item2 == Food.standard) standardFood.Insert(0, food.Item1);
             }
             DrawList(standardFood, Color.Yellow);
-
-            // nacrtaj poisonFood
-            List<Point> poisonFood = new List<Point>();
-            foreach (Tuple<Point, Food> food in foodPosition)
-            {
-                if (food.Item2 == Food.poison) poisonFood.Insert(0, food.Item1);
-            }
-            DrawList(poisonFood, Color.Red);
-
 
             // crtanje zmije
             List<Point> snakePoints = snake.getPosition();
@@ -141,6 +134,29 @@ namespace Zmijica
             List<Point> snakeHead = new List<Point>();
             snakeHead.Insert(0, snake.headPosition());
             DrawList(snakeHead, Color.DarkGreen);
+
+
+            // crtanje AI zmije
+            List<Point> snakeAIPoints = snakeAI.getPosition();
+            DrawList(snakeAIPoints, Color.Blue);
+
+            List<Point> snakeAIInTransperentPoints = new List<Point>();
+            foreach (Point snakeAIPoint in snakeAIPoints)
+            {
+                if (snakeAIPoint == snakeAI.headPosition()) continue;
+                foreach (Point transparentPoint in transparentPoints)
+                {
+                    if (transparentPoint == snakeAIPoint)
+                    {
+                        snakeAIInTransperentPoints.Insert(0, transparentPoint);
+                    }
+                }
+            }
+            DrawList(snakeAIInTransperentPoints, Color.LightCyan); // crtanje transparentnih polja na kojima se zmija nalazi
+
+            List<Point> snakeAIHead = new List<Point>();
+            snakeAIHead.Insert(0, snakeAI.headPosition());
+            DrawList(snakeAIHead, Color.DarkBlue);
 
 
             // za svaki pomak gubi se bod
@@ -175,53 +191,30 @@ namespace Zmijica
 
             if (KeyCode == up)
             {
-                if (newLevel)
-                {
-                    newLevel = false;
-                    return;
-                }
-                if (ActivateTp(new Point(0, -1))) return;
+
                 // default ponašanje : skretanje
-                else if (direction.Y == 1 && direction.X == 0) return;
+                if (direction.Y == 1 && direction.X == 0) return;
                 newDirection.Y = -1;
                 newDirection.X = 0;
             }
             else if (KeyCode == down)
             {
-                if (newLevel)
-                {
-                    newLevel = false;
-                    return;
-                }
-                if (ActivateTp(new Point(0, 1))) return;
                 // default ponašanje : skretanje
-                else if (direction.Y == -1 && direction.X == 0) return;
+                if (direction.Y == -1 && direction.X == 0) return;
                 newDirection.Y = 1;
                 newDirection.X = 0;
             }
             else if (KeyCode == left)
             {
-                if (newLevel)
-                {
-                    newLevel = false;
-                    return;
-                }
-                if (ActivateTp(new Point(-1, 0))) return;
                 // default ponašanje : skretanje
-                else if (direction.Y == 0 && direction.X == 1) return;
+                if (direction.Y == 0 && direction.X == 1) return;
                 newDirection.Y = 0;
                 newDirection.X = -1;
             }
             else if (KeyCode == right)
             {
-                if (newLevel)
-                {
-                    newLevel = false;
-                    return;
-                }
-                if (ActivateTp(new Point(1, 0))) return;
                 // default ponašanje : skretanje
-                else if (direction.Y == 0 && direction.X == -1) return;
+                if (direction.Y == 0 && direction.X == -1) return;
                 newDirection.Y = 0;
                 newDirection.X = 1;
             }
@@ -317,278 +310,7 @@ namespace Zmijica
 
         #region Pomoćne funkcije
 
-        /// <summary>
-        /// Provjerava hoće li zmijica koristiti posebne kontrole
-        /// </summary>
-        /// <param name="dir"></param>
-        /// <returns></returns>
-        bool ActivateTp(Point dir)
-        {
-            if (tpSelf)
-            {
-                TeleportToSelf(dir);
-                return true;
-            }
-            else if (tpEdge)
-            {
-                TeleportToEdge(dir);
-                return true;
-            }
-            else if (skipN)
-            {
-                SkipN(dir, skipAmount);
-                return true;
-            }
-
-            return false;   // daje znak da je default ponašanje u pitanju
-        }
-
-        /// <summary>
-        /// Zmija ide do ruba u smjeru direction.
-        /// Direction iz skupa {(-1,0),(1,0),(0,1),(0,-1)}
-        /// </summary>
-        /// <param name="direction"></param>
-        void TeleportToEdge(Point direction)
-        {
-            if (OppositeDirection(direction, this.direction)) return;
-
-            //? ovo kao prima direction znaci ako je isao u nekom smjeru, moze se pomakmnut do zida da zadrzi smjer kretanja? ok
-
-            while (true)
-            {
-                //gdje ce se pomaknut u sljedecem otkucaju
-                Point headPosition = snake.headPosition();
-                headPosition.X += direction.X;
-                headPosition.Y += direction.Y;
-                List<Point> snakePosition = snake.getPosition();
-                if (headPosition.X == -1 || headPosition.Y == -1 || headPosition.X == varijable.width || headPosition.Y == varijable.width)
-                    return;
-
-                foreach (Point wall in walls)
-                {
-                    if (headPosition == wall)
-                        return;
-                }
-
-                if (snakeDying(headPosition, snakePosition))
-                {
-                    direction.X = 0;
-                    direction.Y = 0;
-                    varijable.snakeAlive = false;
-                    timestamp = 0;
-                }
-
-                //provjeri je li zmija u koliziji s hranom
-                bool hasEaten = false;
-                foreach (Tuple<Point, Food> food in foodPosition.ToList())
-                {
-                    if (food.Item1 == headPosition)
-                    {
-                        snake.update(direction, food.Item2, varijable.poisonDamage);
-                        foodPosition.Remove(food);
-                        hasEaten = true;
-                        if (food.Item2 == Food.standard)
-                        {
-                            newStandardFood(headPosition, snakePosition);
-                        }
-                    }
-                }
-
-                if (!hasEaten)
-                {
-                    snake.update(direction);    // kontrola zmije
-                }
-
-                //generiraj otrov(ne smije bit u koliziji sa zidom, sa zmijom ili s drugim hranama)
-                if (timestamp > 0 && varijable.snakeAlive && timestamp % (ulong)varijable.poisonInterval == 0)
-                {
-                    newPoisonFood(headPosition, snakePosition);
-                }
-            }
-        }
-
-        bool OppositeDirection(Point a, Point b)
-        {
-            if (a.X + b.X == 0 && a.Y + b.Y == 0) return true;
-            return false;
-        }
-
-        /// <summary>
-        /// Zmija preskače n polja u smjeru direction.
-        /// Direction iz skupa {(-1,0),(1,0),(0,1),(0,-1)}
-        /// </summary>
-        /// <param name="direction"></param>
-        /// <param name="n"></param>
-        void SkipN(Point direction, int n)
-        {
-            if (OppositeDirection(direction, this.direction)) return;
-
-            //TODO nemam pojma kak se ovo tesitra(poziva)
-            for (int i = 0; i < n; i++)
-            {
-                //gdje ce se pomaknut u sljedecem otkucaju
-                Point headPosition = snake.headPosition();
-                headPosition.X += direction.X;
-                headPosition.Y += direction.Y;
-                List<Point> snakePosition = snake.getPosition();
-                if (headPosition.X == -1 || headPosition.Y == -1 || headPosition.X == varijable.width || headPosition.Y == varijable.width)
-                    return;
-
-                if (snakeDying(headPosition, snakePosition))
-                {
-                    direction.X = 0;
-                    direction.Y = 0;
-                    varijable.snakeAlive = false;
-                    timestamp = 0;
-                }
-
-                //provjeri je li zmija u koliziji s hranom
-                bool hasEaten = false;
-                foreach (Tuple<Point, Food> food in foodPosition.ToList())
-                {
-                    if (food.Item1 == headPosition)
-                    {
-                        snake.update(direction, food.Item2, varijable.poisonDamage);
-                        foodPosition.Remove(food);
-                        hasEaten = true;
-                        if (food.Item2 == Food.standard)
-                        {
-                            newStandardFood(headPosition, snakePosition);
-                        }
-                    }
-                }
-
-                if (!hasEaten)
-                {
-                    snake.update(direction);    // kontrola zmije
-                }
-
-                //generiraj otrov(ne smije bit u koliziji sa zidom, sa zmijom ili s drugim hranama)
-                if (timestamp > 0 && varijable.snakeAlive && timestamp % (ulong)varijable.poisonInterval == 0)
-                {
-                    newPoisonFood(headPosition, snakePosition);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Zmija se teleportira do sebe u smjeru direction.
-        /// Što ako u tom smjeru nema zmije? Ništa se ne događa.
-        /// Direction iz skupa {(-1,0),(1,0),(0,1),(0,-1)}
-        /// </summary>
-        /// <param name="direction"></param>
-        void TeleportToSelf(Point direction)
-        {
-            if (OppositeDirection(direction, this.direction)) return;
-
-            //? ovo kao prima direction znaci ako je isao u nekom smjeru, moze se pomakmnut do zida da zadrzi smjer kretanja? ok
-
-            while (true)
-            {
-                //gdje ce se pomaknut u sljedecem otkucaju
-                Point headPosition = snake.headPosition();
-                headPosition.X += direction.X;
-                headPosition.Y += direction.Y;
-                List<Point> snakePosition = snake.getPosition();
-                if (headPosition.X == -1 || headPosition.Y == -1 || headPosition.X == varijable.width || headPosition.Y == varijable.width)
-                    return;
-
-                foreach (Point wall in walls)
-                {
-                    if (headPosition == wall)
-                        return;
-                }
-
-                foreach (Point snake in snakePosition)
-                {
-                    if (headPosition == snake)
-                        return;
-                }
-
-                if (snakeDying(headPosition, snakePosition))
-                {
-                    direction.X = 0;
-                    direction.Y = 0;
-                    varijable.snakeAlive = false;
-                    timestamp = 0;
-                }
-
-                //provjeri je li zmija u koliziji s hranom
-                bool hasEaten = false;
-                foreach (Tuple<Point, Food> food in foodPosition.ToList())
-                {
-                    if (food.Item1 == headPosition)
-                    {
-                        snake.update(direction, food.Item2, varijable.poisonDamage);
-                        foodPosition.Remove(food);
-                        hasEaten = true;
-                        if (food.Item2 == Food.standard)
-                        {
-                            newStandardFood(headPosition, snakePosition);
-                        }
-                    }
-                }
-
-                if (!hasEaten)
-                {
-                    snake.update(direction);    // kontrola zmije
-                }
-
-                //generiraj otrov(ne smije bit u koliziji sa zidom, sa zmijom ili s drugim hranama)
-                if (timestamp > 0 && varijable.snakeAlive && timestamp % (ulong)varijable.poisonInterval == 0)
-                {
-                    newPoisonFood(headPosition, snakePosition);
-                }
-            }
-        }
-
-        void LevelUp()
-        {
-            newLevel = true;
-            timestamp = 0;
-
-            varijable.stage += 1;
-            varijable.goalLength += 1;
-
-            if ((varijable.stage % 2) == 0) FPS = varijable.FPS + 2;    // poziv settera koji djeluje na timer forme
-            if (varijable.stage == 4)   // povećanje levela != povećanje stage-a
-            {
-                varijable.stage = 1;
-                varijable.level += 1;
-
-                // otežanje igre
-                varijable.poisonDamage += 1;
-            }
-
-            //nakon sto se ovdje inicijalizira treba uvijek korist varijable.width, ovak je neuredno
-            varijable.width = stage[varijable.stage].width;
-
-            // za prelazak naa novi level dobiva se novi bodovni resurs
-            varijable.score += varijable.level * varijable.goalLength * stage[varijable.stage].width * stage[varijable.stage].width;
-
-            //stage[varijable.stage] = new Stage(varijable.stage);
-            //GetScreen(stage[varijable.stage].width);
-
-            snake = new Snake(varijable.width); // nova zmijica na (3,3) //TODO ovo treba ovisiti o vrsti levela
-            //DrawList(snake.getPosition(), Color.Green); // inicijalno crtanje zmije
-
-            walls = stage[varijable.stage].getWalls();
-            DrawList(walls, Color.Purple);  // crta točke iz walls
-
-            direction = new Point(0, 0); // reset kontrola
-            newDirection = new Point(0, 0);
-
-            // food processing
-            //TODO jedan timestamp = 0 se moze izbrisat?
-            timestamp = 0;
-            foodPosition = new List<Tuple<Point, Food>>();
-            newFood = new Tuple<Point, Food>(new Point(7, 7), Food.standard);
-            foodPosition.Insert(0, newFood);
-
-            FPS = varijable.FPS;    // postavljanje osvježavanja
-        }
-
-        private bool isLegalFoodPosition(Point position, Point headPosition, List<Point> snakePosition)
+        private bool isLegalFoodPosition(Point position, Point snakeHeadPosition, List<Point> snakePosition, Point snakeAIHeadPosition, List<Point> snakeAIPosition)
         {
             bool isLegalPosition = true;
             //kolizija sa zmijom?
@@ -599,36 +321,28 @@ namespace Zmijica
                     isLegalPosition = false;
                 }
             }
-            if (headPosition == position) isLegalPosition = false;
-            //kolizija sa hranom?
-            foreach (Tuple<Point, Food> food in foodPosition.ToList())
+            if (snakeHeadPosition == position) isLegalPosition = false;
+            //kolizija sa zmijomAI?
+            foreach (Point snakeBody in snakeAIPosition.ToList())
             {
-                if (food.Item1 == position)
-                {
-                    isLegalPosition = false;
-                    break;
-                }
-            }
-            //kolizija sa zidom?
-            foreach (Point wall in walls.ToList())
-            {
-                if (wall == position)
+                if (snakeBody == position)
                 {
                     isLegalPosition = false;
                 }
             }
+            if (snakeAIHeadPosition == position) isLegalPosition = false;
 
             if (isLegalPosition) return true;
             else return false;
         }
-
-        private void newStandardFood(Point headPosition, List<Point> snakePosition)
+        private void newStandardFood(Point snakeHeadPosition, List<Point> snakePosition, Point snakeAIHeadPosition, List<Point> snakeAIPosition)
         {
             //generiraj dok se ne nade dozvoljena pozicija
             while (true)
             {
+                //TODO ne skroz random?
                 Point position = new Point(r.Next(0, varijable.width - 1), r.Next(0, varijable.width - 1));
-                if (isLegalFoodPosition(position, headPosition, snakePosition))
+                if (isLegalFoodPosition(position, snakeHeadPosition, snakePosition, snakeAIHeadPosition, snakeAIPosition))
                 {
                     Tuple<Point, Food> newFood = new Tuple<Point, Food>(position, Food.standard);
                     foodPosition.Insert(0, newFood);
@@ -636,21 +350,7 @@ namespace Zmijica
                 }
             }
         }
-        private void newPoisonFood(Point headPosition, List<Point> snakePosition)
-        {
-            //generiraj dok se ne nade dozvoljena pozicija
-            while (true)
-            {
-                Point position = new Point(r.Next(0, varijable.width - 1), r.Next(0, varijable.width - 1));
-                if (isLegalFoodPosition(position, headPosition, snakePosition))
-                {
-                    Tuple<Point, Food> newFood = new Tuple<Point, Food>(position, Food.poison);
-                    foodPosition.Insert(0, newFood);
-                    return;
-                }
-            }
-        }
-        private bool snakeDying(Point headPosition, List<Point> snakePosition)
+        private bool snakeDying(Point snakeHeadPosition, List<Point> snakePosition, List<Point> snakeAIPosition)
         {
             //provjeri je li zmija u koliziji sama sa sobom
             bool isDead = false;
@@ -659,26 +359,65 @@ namespace Zmijica
             bool canPassThrough = false;
             foreach (Point transparentPoint in transparentPoints)
             {
-                if (transparentPoint == headPosition)
+                if (transparentPoint == snakeHeadPosition)
                 {
                     canPassThrough = true;
                     break;
                 }
             }
             if (!canPassThrough)
+            {
+                //zabila se u sebe
                 foreach (Point snakeBody in snakePosition.ToList())
                 {
-                    if (snakeBody == headPosition)
+                    if (snakeBody == snakeHeadPosition)
                     {
                         isDead = true;
                     }
                 }
-            //moze umrjet da se zabi u zid
-            foreach (Point wall in walls.ToList())
-            {
-                if (wall == headPosition)
+                //zabila se u snakeAI
+                foreach (Point snakeAIBody in snakeAIPosition.ToList())
                 {
-                    isDead = true;
+                    if (snakeAIBody == snakeHeadPosition)
+                    {
+                        isDead = true;
+                    }
+                }
+            }
+            return isDead;
+        }
+        private bool snakeAIDying(Point snakeAIHeadPosition, List<Point> snakeAIPosition, List<Point> snakePosition)
+        {
+            //provjeri je li zmija u koliziji sama sa sobom
+            bool isDead = false;
+            //moze umrijet da se zabi u sebe
+            //dodajem if koj ce napravit da na svakom levelu bude nekoliko polja za koja nije frka ak se zmij zabije sama u sebe
+            bool canPassThrough = false;
+            foreach (Point transparentPoint in transparentPoints)
+            {
+                if (transparentPoint == snakeAIHeadPosition)
+                {
+                    canPassThrough = true;
+                    break;
+                }
+            }
+            if (!canPassThrough)
+            {
+                //zabila se u sebe
+                foreach (Point snakeSIBody in snakeAIPosition.ToList())
+                {
+                    if (snakeSIBody == snakeAIHeadPosition)
+                    {
+                        isDead = true;
+                    }
+                }
+                //zabila se u snakeAI
+                foreach (Point snakeBody in snakePosition.ToList())
+                {
+                    if (snakeBody == snakeAIHeadPosition)
+                    {
+                        isDead = true;
+                    }
                 }
             }
             return isDead;
@@ -692,13 +431,15 @@ namespace Zmijica
 
             timestamp++;
             //gdje ce se pomaknut u sljedecem otkucaju
-            Point headPosition = snake.headPosition();
-            headPosition.X += direction.X;
-            headPosition.Y += direction.Y;
+            Point snakeHeadPosition = snake.headPosition();
+            snakeHeadPosition.X += direction.X;
+            snakeHeadPosition.Y += direction.Y;
             List<Point> snakePosition = snake.getPosition();
+            List<Point> snakeAIPosition = snakeAI.getPosition();
+            Point snakeAIHeadPosition = snakeAI.headPosition();
 
 
-            if (snakeDying(headPosition, snakePosition))
+            if (snakeDying(snakeHeadPosition, snakePosition, snakeAIPosition))
             {
                 direction.X = 0;
                 direction.Y = 0;
@@ -710,15 +451,12 @@ namespace Zmijica
             bool hasEaten = false;
             foreach (Tuple<Point, Food> food in foodPosition.ToList())
             {
-                if (food.Item1 == headPosition)
+                if (food.Item1 == snakeHeadPosition)
                 {
-                    snake.update(direction, food.Item2, varijable.poisonDamage);
+                    snake.update(direction, food.Item2);
                     foodPosition.Remove(food);
                     hasEaten = true;
-                    if (food.Item2 == Food.standard)
-                    {
-                        newStandardFood(headPosition, snakePosition);
-                    }
+                    newStandardFood(snakeHeadPosition, snakePosition, snakeAIHeadPosition, snakeAIPosition);
                 }
             }
 
@@ -726,11 +464,42 @@ namespace Zmijica
             {
                 snake.update(direction);    // kontrola zmije
             }
+        }
 
-            //generiraj otrov(ne smije bit u koliziji sa zidom, sa zmijom ili s drugim hranama)
-            if (timestamp > 0 && varijable.snakeAlive && timestamp % (ulong)varijable.poisonInterval == 0)
+        private void updateGameAI()
+        {
+            timestamp++;
+            //gdje ce se pomaknut u sljedecem otkucaju
+            Point snakeAIHeadPosition = snakeAI.headPosition();
+            List<Point> snakeAIPosition = snakeAI.getPosition();
+            List<Point> snakePosition = snake.getPosition();
+            Point snakeHeadPosition = snake.headPosition();
+            Point directionAI = snakeAI.newDirection(foodPosition.First().Item1, snakePosition, transparentPoints);
+            snakeAIHeadPosition.X += directionAI.X;
+            snakeAIHeadPosition.Y += directionAI.Y;
+
+            if (snakeAIDying(snakeAIHeadPosition, snakeAIPosition, snakePosition))
             {
-                newPoisonFood(headPosition, snakePosition);
+                varijable.snakeAIAlive = false;
+                timestamp = 0;
+            }
+
+            //provjeri je li zmija u koliziji s hranom
+            bool hasEaten = false;
+            foreach (Tuple<Point, Food> food in foodPosition.ToList())
+            {
+                if (food.Item1 == snakeAIHeadPosition)
+                {
+                    snakeAI.update(foodPosition.First().Item1, snakeAIPosition, transparentPoints, food.Item2);
+                    foodPosition.Remove(food);
+                    hasEaten = true;
+                    newStandardFood(snakeHeadPosition, snakePosition, snakeAIHeadPosition, snakeAIPosition);
+                }
+            }
+
+            if (!hasEaten)
+            {
+                snakeAI.update(foodPosition.First().Item1, snakePosition, transparentPoints);    // kontrola zmije
             }
         }
 
