@@ -11,7 +11,6 @@ RP3 project
 
 ## TODO
 ### (Andrija)
-* promijeni random-behaviour-food boju u neku različitu od self-skip polja
 * sastaviti tekst za help screen
 * dodati svoj dio u prezentaciju
 
