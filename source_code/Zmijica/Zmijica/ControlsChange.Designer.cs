@@ -1,6 +1,6 @@
 ﻿namespace Zmijica
 {
-    partial class HelpScreen
+    partial class ControlsChange
     {
         /// <summary>
         /// Required designer variable.
@@ -28,24 +28,41 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // HelpScreen
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(42, 59);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(192, 31);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Press a Button";
+            // 
+            // ControlsChange
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(584, 681);
+            this.ClientSize = new System.Drawing.Size(279, 143);
+            this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "HelpScreen";
+            this.Name = "ControlsChange";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Help";
+            this.Text = "Button Dialogue";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ControlsChange_KeyDown);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
+
+        private System.Windows.Forms.Label label1;
     }
 }

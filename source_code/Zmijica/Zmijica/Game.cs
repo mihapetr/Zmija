@@ -18,6 +18,7 @@ namespace Zmijica
         // tehnički detalji
         public int width = 10;
         public bool snakeAlive = true;
+        public bool paused = false;
 
         // težina igre
         public int goalLength = 8;
@@ -119,6 +120,7 @@ namespace Zmijica
 
             stage[1] = new Stage(1);
             GetScreen(stage[1].width);
+            varijable.width = stage[1].width;   // slanje u metavarijable
 
             // food processing
             timestamp = 0;
@@ -238,54 +240,73 @@ namespace Zmijica
 
         public override void KeyPressed()
         {
+            // pauza
 
-            if(KeyCode == up)
+            if (KeyCode == Keys.P)
+            {
+                // nepotrebno provjeravati u ovakvoj implementaciji s dijalogom
+                if (!varijable.paused)
+                {
+                    timer1.Stop();
+                    varijable.paused = true;
+                    HelpScreen hc = new HelpScreen();
+                    hc.ShowDialog();
+                    varijable.paused = false;
+                    timer1.Start();
+                }
+            }
+
+            if (varijable.paused) return;
+
+            // kretnje
+
+            if (KeyCode == up)
             {
                 if (newLevel)
                 {
                     newLevel = false;
                     return;
                 }
-                if (ActivateTp(new Point(0,-1))) return;
+                if (ActivateTp(new Point(0, -1))) return;
                 // default ponašanje : skretanje
                 else if (direction.Y == 1 && direction.X == 0) return;
                 newDirection.Y = -1;
                 newDirection.X = 0;
-            } 
-            else if(KeyCode == down)
+            }
+            else if (KeyCode == down)
             {
                 if (newLevel)
                 {
                     newLevel = false;
                     return;
                 }
-                if (ActivateTp(new Point(0,1))) return;
+                if (ActivateTp(new Point(0, 1))) return;
                 // default ponašanje : skretanje
                 else if (direction.Y == -1 && direction.X == 0) return;
                 newDirection.Y = 1;
                 newDirection.X = 0;
-            } 
-            else if(KeyCode == left)
+            }
+            else if (KeyCode == left)
             {
                 if (newLevel)
                 {
                     newLevel = false;
                     return;
                 }
-                if (ActivateTp(new Point(-1,0))) return;
+                if (ActivateTp(new Point(-1, 0))) return;
                 // default ponašanje : skretanje
                 else if (direction.Y == 0 && direction.X == 1) return;
                 newDirection.Y = 0;
                 newDirection.X = -1;
-            } 
-            else if(KeyCode == right)
+            }
+            else if (KeyCode == right)
             {
                 if (newLevel)
                 {
                     newLevel = false;
                     return;
                 }
-                if (ActivateTp(new Point(1,0))) return;
+                if (ActivateTp(new Point(1, 0))) return;
                 // default ponašanje : skretanje
                 else if (direction.Y == 0 && direction.X == -1) return;
                 newDirection.Y = 0;
@@ -294,7 +315,7 @@ namespace Zmijica
 
             // posebne kretnje
 
-            else if(KeyCode == tpEdgeActivator || ModifierKeys == tpEdgeActivator)
+            else if (KeyCode == tpEdgeActivator || ModifierKeys == tpEdgeActivator)
             {
                 skipN = false; tpSelf = false;  // ostale deaktiviramo
                 tpEdge = true;
@@ -311,49 +332,6 @@ namespace Zmijica
                 tpSelf = false; tpEdge = false; // ostale deaktiviramo
                 skipN = true;
             }
-
-            /*switch (KeyCode)
-            {
-                //case Keys.W:
-                //case Keys.Up:
-                case up:
-                    if (direction.Y == 1 && direction.X == 0) break;
-                    newDirection.Y = -1;
-                    newDirection.X = 0;
-                    break;
-
-                case Keys.S:
-                case Keys.Down:
-                    if (direction.Y == -1 && direction.X == 0) break;
-                    newDirection.Y = 1;
-                    newDirection.X = 0;
-                    break;
-
-                //case Keys.A:
-                //case Keys.Left:
-                case "left":
-                    if (direction.Y == 0 && direction.X == 1) break;
-                    newDirection.Y = 0;
-                    newDirection.X = -1;
-                    break;
-
-                //case Keys.D:
-                //case Keys.Right:
-                case "right":
-                    if (direction.Y == 0 && direction.X == -1) break;
-                    newDirection.Y = 0;
-                    newDirection.X = 1;
-                    break;
-
-                case "teleport":
-                    Teleport(varijable.tpDirection);
-                    break;
-
-                case ""
-
-                default:
-                    break;
-            }*/
         }
 
         public override void KeyReleased()

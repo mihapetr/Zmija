@@ -219,6 +219,7 @@
             this.buttonPlay.TabIndex = 19;
             this.buttonPlay.Text = "return";
             this.buttonPlay.UseVisualStyleBackColor = false;
+            this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
             // 
             // button1
             // 

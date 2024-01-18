@@ -11,20 +11,18 @@ RP3 project
 
 ## TODO
 ### (Andrija)
-* zmija može preskočiti samu sebe negdje
-* skip za n polja : implementiraj deklariranu funkciju Game.SkipN(Point direction, int n)
-* pomak do ruba polja : implementiraj deklariranu fnkciju Game.SkipToEdge(Point direction)
-* pomak do same sebe : implementiraj deklariranu fnkciju Game.SkipToSelf(Point direction)
+* promijeni random-behaviour-food boju u neku različitu od self-skip polja
+* sastaviti tekst za help screen
 * dodati svoj dio u prezentaciju
 
 ### (Mihael)
 * dovršiti svoj dio prezentacije
+* dodati pause game kontrolu i prozor (bit će isti kao help screen)
 
 ### (Jakov?)
-* main menu screen : play, exit, enter name, settings
-* settings screen : game rules, controls settings
-* pause screen (=settings screen?) : game rules, control settings
-* dodati svoj dio u prezentaciju
+* maknuti save-button s options screen-a jer se promjene odmah događaju
+* help screen mora imati "Main menu" button
+* dodati svoj dio u prezentaciju ? koji dio ?
 
 ## Izrada dokumentacije
 Kako bi generiranje dokumentacije što bolje teklo treba pogledati [XML tags](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags#general-tags).
