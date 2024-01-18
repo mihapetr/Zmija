@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,12 +23,44 @@ namespace Zmijica
         /// </summary>
         public ControlSettings()
         {
-            up = Keys.Up;
-            down = Keys.Down;
-            left = Keys.Left;
-            right = Keys.Right;
+            up = Keys.W;
+            down = Keys.S;
+            left = Keys.A;
+            right = Keys.D;
             tpEdgeActivator = Keys.Shift;
             tpSelfActovator = Keys.Space;
+        }
+
+        /// <summary>
+        /// Povezuje funkcionalnost preko aliasa s danim <c>Keys</c> kodom.
+        /// </summary>
+        /// <param name="buttonFunction"></param>
+        /// <param name="keyCode"></param>
+        public void setButton(string buttonFunction, Keys keyCode)
+        {
+            switch (buttonFunction)
+            {
+                case "up":
+                    up = keyCode;
+                    break;
+                case "down":
+                    down = keyCode;
+                    break;
+                case "left":
+                    left = keyCode;
+                    break;
+                case "right":
+                    right = keyCode;
+                    break;
+                case "edge":
+                    tpEdgeActivator = keyCode;
+                    break;
+                case "self":
+                    tpSelfActovator = keyCode;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

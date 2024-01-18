@@ -36,10 +36,7 @@ namespace Zmijica
 
         // varijable za kontorlu zmije
 
-        Keys tpEdgeActivator, tpSelfActivator;   // aktivatori za specijalne pokrete
         Keys up, down, left, right;  // generalne kontrole
-        bool tpEdge, skipN, tpSelf;     // jesu li kretnje aktivirane posebnim tipkama
-        int skipAmount;
 
         #endregion
 
@@ -51,15 +48,13 @@ namespace Zmijica
 
         public override void Setup()
         {
-            // default kontrole
-            up = Keys.W;
-            down = Keys.S;
-            left = Keys.A;
-            right = Keys.D;
-            tpEdgeActivator = Keys.Shift;
-            tpSelfActivator = Keys.Space;
+            // kontrole iz postavki
+            up = cSettings.up;
+            down = cSettings.down;
+            left = cSettings.left;
+            right = cSettings.right;
 
-            #region mala modifikacija prozora
+            #region mala modifikacija prozora za versus mode
 
             varijable.vsModeInit();     // tamo su vrijednosti za ovaj mode
             GetScreen(varijable.width);
@@ -68,6 +63,7 @@ namespace Zmijica
             BackColor = Color.FromArgb(50,0,50);
             labelLevel.Hide();
             labelStage.Hide();
+            labelSkipAmount.Hide();
 
             #endregion
 
@@ -89,7 +85,6 @@ namespace Zmijica
                     transparentPoints.Insert(0, new Point(i, j));
                 }
             }
-
 
             snake = new Snake(varijable.width);
             snakeAI = new SnakeAI(varijable.width);
@@ -157,17 +152,9 @@ namespace Zmijica
             snakeAIHead.Insert(0, snakeAI.headPosition());
             DrawList(snakeAIHead, Color.DarkBlue);
 
-
-            // za svaki pomak gubi se bod
-            //TODO ak je stisnut shift(il kaj got onda gubi bod samo svaki drugi pomak)
-            if (direction.X != 0 || direction.Y != 0) varijable.score--;
-
             // crtanje ploče s bodovima
             labelLength.Text = $"Length: {snake.Length}";
             labelScore.Text = $"Score: {varijable.score.ToString("00000000")}";
-
-            // provjera bodova
-            if (varijable.score <= 0) varijable.snakeAlive = false;
 
             // provjera kraja
             if (varijable.snakeAlive == false)
@@ -176,18 +163,19 @@ namespace Zmijica
                 (new GameOverForm(varijable.score)).ShowDialog();
                 Close();
             }
-
-            // indikator korisniku da su uključeni aktivatori za specijalne kretnje
-            labelSkipAmount.Text = skipAmount.ToString();
-            labelSkipAmount.ForeColor = skipN ? Color.Yellow : BackColor;
-            if (tpSelf) pictureBox.BackColor = Color.Green;
-            else if (tpEdge) pictureBox.BackColor = Color.Purple;
-            else pictureBox.BackColor = BackColor;
         }
         public override void KeyPressed()
         {
-
-            if (KeyCode == up)
+            if(KeyCode == Keys.P)
+            {
+                timer1.Stop();
+                varijable.paused = true;
+                HelpScreen hc = new HelpScreen();
+                hc.ShowDialog();
+                varijable.paused = false;
+                timer1.Start();
+            }
+            else if (KeyCode == up)
             {
 
                 // default ponašanje : skretanje
@@ -216,49 +204,10 @@ namespace Zmijica
                 newDirection.Y = 0;
                 newDirection.X = 1;
             }
-
-            // posebne kretnje
-
-            else if (KeyCode == tpEdgeActivator || ModifierKeys == tpEdgeActivator)
-            {
-                skipN = false; tpSelf = false;  // ostale deaktiviramo
-                tpEdge = true;
-            }
-            else if (KeyCode == tpSelfActivator || ModifierKeys == tpSelfActivator)
-            {
-                skipN = false; tpEdge = false; // ostale deaktiviramo
-                tpSelf = true;
-                pictureBox.BackColor = Color.Green;
-            }
-            else if (KeyCode >= Keys.NumPad1 && KeyCode <= Keys.NumPad9)
-            {
-                skipAmount = (int)KeyCode - (int)Keys.NumPad0;
-                tpSelf = false; tpEdge = false; // ostale deaktiviramo
-                skipN = true;
-            }
         }
-        public override void KeyReleased()
-        {
-            //if (ModifierKeys != Keys.Shift) tpSelf = false;
 
-            if (KeyCode == tpEdgeActivator)
-            {
-                tpEdge = false;
-            }
-            else if (KeyCode == tpSelfActivator)
-            {
-                tpSelf = false;
-            }
-            else if (KeyCode >= Keys.NumPad1 && KeyCode <= Keys.NumPad9)
-            // otpušten je broj na tipkovnici
-            {
-                skipN = false;
-            }
-            if (ModifierKeys != tpSelfActivator && ModifierKeys != tpEdgeActivator)
-            {
-                tpSelf = tpEdge = false;
-            }
-        }
+        // Ne koristi se ovdje.
+        public override void KeyReleased() { }
 
         #endregion
 
@@ -441,6 +390,8 @@ namespace Zmijica
                 {
                     snake.update(direction, food.Item2);
                     foodPosition.Remove(food);
+                    // dodajem score increase
+                    varijable.score += varijable.reward * snake.Length;
                     hasEaten = true;
                     newStandardFood(snakeHeadPosition, snakePosition, snakeAIHeadPosition, snakeAIPosition);
                 }
