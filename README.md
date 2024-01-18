@@ -17,11 +17,10 @@ RP3 project
 
 ### (Mihael)
 * dovršiti svoj dio prezentacije
-* dodati pause game kontrolu i prozor (bit će isti kao help screen)
 
 ### (Jakov?)
 * maknuti save-button s options screen-a jer se promjene odmah događaju
-* help screen mora imati "Main menu" button
+* help screen mora imati "Main menu" button i "Resume button"
 * dodati svoj dio u prezentaciju ? koji dio ?
 
 ## Izrada dokumentacije

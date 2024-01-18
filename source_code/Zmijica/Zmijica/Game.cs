@@ -44,7 +44,7 @@ namespace Zmijica
         public void vsModeInit()
         {
             width = 30;
-            FPS = 10;
+            FPS = 15;
             poisonDamage = 4;
             poisonInterval = 20;
             randomInterval = 5;
@@ -245,19 +245,13 @@ namespace Zmijica
 
             if (KeyCode == Keys.P)
             {
-                // nepotrebno provjeravati u ovakvoj implementaciji s dijalogom
-                if (!varijable.paused)
-                {
-                    timer1.Stop();
-                    varijable.paused = true;
-                    HelpScreen hc = new HelpScreen();
-                    hc.ShowDialog();
-                    varijable.paused = false;
-                    timer1.Start();
-                }
+                timer1.Stop();
+                varijable.paused = true;
+                HelpScreen hc = new HelpScreen();
+                hc.ShowDialog();
+                varijable.paused = false;
+                timer1.Start();
             }
-
-            if (varijable.paused) return;
 
             // kretnje
 
