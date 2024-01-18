@@ -824,7 +824,6 @@ namespace Zmijica
                 newRandomFood(headPosition, snakePosition);
             }
         }
-
         private void updateGameDouble()
         {
             direction = newDirection;
