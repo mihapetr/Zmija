@@ -63,6 +63,7 @@ namespace Zmijica
             BackColor = Color.FromArgb(50,0,50);
             labelLevel.Hide();
             labelStage.Hide();
+            labelSkipAmount.Hide();
 
             #endregion
 
@@ -359,6 +360,8 @@ namespace Zmijica
                 {
                     snake.update(direction, food.Item2);
                     foodPosition.Remove(food);
+                    // dodajem score increase
+                    varijable.score += varijable.reward * snake.Length;
                     hasEaten = true;
                     newStandardFood(snakeHeadPosition, snakePosition, snakeAIHeadPosition, snakeAIPosition);
                 }

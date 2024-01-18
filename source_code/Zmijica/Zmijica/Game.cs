@@ -27,6 +27,7 @@ namespace Zmijica
         public int randomInterval = 18;
         public int poisonDamage = 3;
         public int FPS = 4;
+        public int reward = 0;
 
         //random foodthings
         public int randomPositiveDuration = 10;
@@ -48,6 +49,8 @@ namespace Zmijica
             poisonDamage = 4;
             poisonInterval = 20;
             randomInterval = 5;
+            score = 1;
+            reward = 100;
         }
     }
 
@@ -648,7 +651,6 @@ namespace Zmijica
 
             FPS = varijable.FPS;    // postavljanje osvježavanja
         }
-
         private bool isLegalFoodPosition(Point position, Point headPosition, List<Point> snakePosition)
         {
             bool isLegalPosition = true;
@@ -682,7 +684,6 @@ namespace Zmijica
             if (isLegalPosition) return true;
             else return false;
         }
-
         private void newStandardFood(Point headPosition, List<Point> snakePosition)
         {
             //generiraj dok se ne nade dozvoljena pozicija
