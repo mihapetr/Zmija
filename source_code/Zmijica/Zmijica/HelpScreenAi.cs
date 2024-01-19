@@ -33,8 +33,6 @@ namespace Zmijica
                 "2. Avoid eating yourself or hitting the walls.\r\n" +
                 "3. you need to colect as much points as you can.\r\n" +
                 "4. Food appears randomly on the map.\r\n\r\n" +
-                "Tips:\r\n" +
-                "- Powerup can make you go faster or you can go trough yourself.\r\n\r\n" +
                 "Good luck and enjoy playing Snake!" +
                 "\r\n------------------------------------------------------------------------------------ ";
         }
