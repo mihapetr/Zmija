@@ -117,4 +117,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label1.Text" xml:space="preserve">
+    <value>---------------- Snake Game Help --------------------------------------------
+
+Welcome to the pixelated version of Snake!
+
+Rules:
+1. The snake grows longer by eating food.
+2. Avoid eating yourself or hitting the walls.
+3. Poisonous food shrinks the snake.
+4. Food appears randomly on the map.
+5. There are 3 stages (maps): 1, 2, 3, 1, 2, 3, ...
+6. No level restrictions, but every three stages, difficulty increases.
+7. Achieve the goal length to advance to the next stage.
+
+Tips:
+- Pay attention to your snake's length and the stage.
+- Be strategic when approaching poisonous food.
+- Navigate through the stages to reach higher levels.
+
+Good luck and enjoy playing Snake!
+------------------------------------------------------------------------------------
+</value>
+  </data>
 </root>
