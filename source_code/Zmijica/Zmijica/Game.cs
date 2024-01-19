@@ -363,7 +363,7 @@ namespace Zmijica
         /// Provjerava hoće li zmijica koristiti posebne kontrole
         /// </summary>
         /// <param name="dir"></param>
-        /// <returns></returns>
+        /// <returns>bool</returns>
         bool ActivateTp(Point dir)
         {
             if(tpSelf)
@@ -384,7 +384,6 @@ namespace Zmijica
 
             return false;   // daje znak da je default ponašanje u pitanju
         }
-
         /// <summary>
         /// Zmija ide do ruba u smjeru direction.
         /// Direction iz skupa {(-1,0),(1,0),(0,1),(0,-1)}
@@ -448,13 +447,18 @@ namespace Zmijica
                 }
             }
         }
-
+        /// <summary>
+        /// ispituje jesu li zadani smjerovi suprotni
+        /// Direction iz skupa {(-1,0),(1,0),(0,1),(0,-1)}
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>bool</returns>
         bool OppositeDirection(Point a, Point b)
         {
             if (a.X + b.X == 0 && a.Y + b.Y == 0) return true;
             return false;
         }
-
         /// <summary>
         /// Zmija preskače n polja u smjeru direction.
         /// Direction iz skupa {(-1,0),(1,0),(0,1),(0,-1)}
@@ -511,7 +515,6 @@ namespace Zmijica
                 }
             }
         }
-
         /// <summary>
         /// Zmija se teleportira do sebe u smjeru direction.
         /// Što ako u tom smjeru nema zmije? Ništa se ne događa.
@@ -604,7 +607,9 @@ namespace Zmijica
                 }
             }
         }
-
+        /// <summary>
+        /// Prebacuje na sljedecu razinu igre
+        /// </summary>
         void LevelUp()
         {
             newLevel = true;
@@ -612,7 +617,6 @@ namespace Zmijica
 
             varijable.stage += 1;
 
-            //if((varijable.stage % 2) == 0) FPS = varijable.FPS + 2;    // poziv settera koji djeluje na timer forme
             if (varijable.stage == 4)   // povećanje levela != povećanje stage-a
             {
                 varijable.stage = 1;
@@ -651,6 +655,13 @@ namespace Zmijica
 
             FPS = varijable.FPS;    // postavljanje osvježavanja
         }
+        /// <summary>
+        /// Ispituje je li pozicija slobodna za generiranje nove hrane
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="headPosition"></param>
+        /// <param name="snakePosition"></param>
+        /// <returns>bool</returns>
         private bool isLegalFoodPosition(Point position, Point headPosition, List<Point> snakePosition)
         {
             bool isLegalPosition = true;
@@ -684,6 +695,11 @@ namespace Zmijica
             if (isLegalPosition) return true;
             else return false;
         }
+        /// <summary>
+        /// Generira novu hranu tipa standard
+        /// </summary>
+        /// <param name="headPosition"></param>
+        /// <param name="snakePosition"></param>
         private void newStandardFood(Point headPosition, List<Point> snakePosition)
         {
             //generiraj dok se ne nade dozvoljena pozicija
@@ -698,6 +714,11 @@ namespace Zmijica
                 }
             }
         }
+        /// <summary>
+        /// Generira novu hranu tipa poison
+        /// </summary>
+        /// <param name="headPosition"></param>
+        /// <param name="snakePosition"></param>
         private void newPoisonFood(Point headPosition, List<Point> snakePosition)
         {
             //generiraj dok se ne nade dozvoljena pozicija
@@ -712,6 +733,11 @@ namespace Zmijica
                 }
             }
         }
+        /// <summary>
+        /// Generira novu hranu tipa random
+        /// </summary>
+        /// <param name="headPosition"></param>
+        /// <param name="snakePosition"></param>
         private void newRandomFood(Point headPosition, List<Point> snakePosition)
         {
             //generiraj dok se ne nade dozvoljena pozicija
@@ -726,6 +752,12 @@ namespace Zmijica
                 }
             }
         }
+        /// <summary>
+        /// Ispituje hoce li zmija umrijeti na zadanoj poziciji
+        /// </summary>
+        /// <param name="headPosition"></param>
+        /// <param name="snakePosition"></param>
+        /// <returns>bool</returns>
         private bool snakeDying(Point headPosition, List<Point> snakePosition)
         {
             //provjeri je li zmija u koliziji sama sa sobom
@@ -760,6 +792,9 @@ namespace Zmijica
             }
             return isDead;
         }
+        /// <summary>
+        /// Azurira igru za jedan vremenski otkucaj
+        /// </summary>
         private void updateGame()
         {
             direction = newDirection;
@@ -825,6 +860,9 @@ namespace Zmijica
                 newRandomFood(headPosition, snakePosition);
             }
         }
+        /// <summary>
+        /// Azurira igru za jedan vremenski otkucaj u slucaju kada se zmija krece ubrzano
+        /// </summary>
         private void updateGameDouble()
         {
             direction = newDirection;

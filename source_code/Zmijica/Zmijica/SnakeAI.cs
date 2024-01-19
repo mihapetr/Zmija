@@ -9,26 +9,27 @@ namespace Zmijica
 {
     internal class SnakeAI
     {
-        string name = "Fuigi";
         int width;
         private List<Point> position
         {
             get;
             set;
         }
-
         public int Length
         {
             get { return position.Count; }
         }
-
-
         public Point direction
         {
             get;
             set;
         }
-
+        /// <summary>
+        /// Konstruktor
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public SnakeAI(int width, int x = 3, int y = 3)
         {
             this.width = width;
@@ -37,23 +38,37 @@ namespace Zmijica
             position.Insert(0, new Point(width - (x+1), width - (y + 1)));
             direction = new Point(0, 0);
         }
-
+        /// <summary>
+        /// Vraca pozicije koje zmija zauzima
+        /// </summary>
         public List<Point> getPosition()
         {
             return position;
         }
+        /// <summary>
+        /// Vraca pozicije glave zmije
+        /// </summary>
         public Point headPosition()
         {
             return position.First();
         }
+        /// <summary>
+        /// Vraca pozicije repa zmije (zadmnju poziciju)
+        /// </summary>
         public Point tailPosition()
         {
             return position.Last();
         }
-
-        //da se ovo napravi kak treba treba prvo napravit enum za vrste hrane pa prema tome slozit update
-        //vraca int zbog random hrane, ako zmija moze proci kroz sebe vrati 1(pozitivno), ako se krece za dva mjesta vrati 2(negativno)
-        //inace vrati 0 (nebitno)
+        /// <summary>
+        /// Azurira poziciju zmije za jedan otkucaj
+        /// </summary>
+        /// <param name="foodPos"></param>
+        /// <param name="snakePosition"></param>
+        /// <param name="transparentPoints"></param>
+        /// <param name="food"></param>
+        /// <returns>
+        /// 0 (int)
+        /// </returns>
         public int update(Point foodPos, List<Point> snakePosition, List<Point> transparentPoints, Food food = Food.noFood)
         {
             //TODO umjetna inteligencija za novi smjer
@@ -82,7 +97,15 @@ namespace Zmijica
             }
             return 0;
         }
-
+        /// <summary>
+        /// Bira smjer u kojem se zmija krece sljedece
+        /// </summary>
+        /// <param name="foodPos"></param>
+        /// <param name="snakePosition"></param>
+        /// <param name="transparentPoints"></param>
+        /// <returns>
+        /// koordinate smjera kretanja
+        /// </returns>
         public Point newDirection(Point foodPos, List<Point> snakePosition, List<Point> transparentPoints)
         {
             Point newDir = new Point(0,0);
@@ -123,6 +146,15 @@ namespace Zmijica
             //if(newDir.X == 0 && newDir.Y == 0) return new Point(0, -1);
             return newDir;
         }
+        /// <summary>
+        /// Ispituje je li zadani smjer kretnje dopusten
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="snakePosition"></param>
+        /// <param name="transparentPoints"></param>
+        /// <returns>
+        /// true ako je dopusteno
+        /// </returns>
         private bool isLegalDirection(Point direction, List<Point> snakePosition, List<Point> transparentPoints)
         {
             Point head = headPosition();
