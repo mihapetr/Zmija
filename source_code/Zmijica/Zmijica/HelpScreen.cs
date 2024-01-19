@@ -48,13 +48,5 @@ namespace Zmijica
         {
             this.Hide();
         }
-
-        private void buttonPlay_Click(object sender, EventArgs e)
-        {
-            MainMenu main = new MainMenu();
-            this.Hide();
-            main.ShowDialog();
-            this.Show();
-        }
     }
 }

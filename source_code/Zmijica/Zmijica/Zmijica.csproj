@@ -69,6 +69,12 @@
     <Compile Include="ControlsChange.Designer.cs">
       <DependentUpon>ControlsChange.cs</DependentUpon>
     </Compile>
+    <Compile Include="HelpScreenAi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HelpScreenAi.Designer.cs">
+      <DependentUpon>HelpScreenAi.cs</DependentUpon>
+    </Compile>
     <Compile Include="SnakeAI.cs" />
     <Compile Include="Food.cs" />
     <Compile Include="GameOverForm.cs">
@@ -118,6 +124,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="HelpScreen.resx">
       <DependentUpon>HelpScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpScreenAi.resx">
+      <DependentUpon>HelpScreenAi.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainMenu.resx">
       <DependentUpon>MainMenu.cs</DependentUpon>
