@@ -252,14 +252,8 @@ namespace Zmijica
             {
                 timer1.Stop();
                 varijable.paused = true;
-                if (this.varijable.aiGame)
-                {
-                    HelpScreenAi ai = new HelpScreenAi(cSettings);
-                    ai.ShowDialog();
-                    varijable.paused = false;
-                    timer1.Start();
-                }
-                else
+                
+                if(true)
                 {
                     HelpScreen hc = new HelpScreen(cSettings);
                     hc.ShowDialog();
