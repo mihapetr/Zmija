@@ -28,9 +28,6 @@ namespace Zmijica
                 "-left: " + cSettings.left.ToString() + "\r\n" +
                 "-right: " + cSettings.right.ToString() + "\r\n" +
                 "-down: " + cSettings.down.ToString() + "\r\n" +
-                "-teleports snake to the nearest wall in that direction: " + cSettings.tpEdgeActivator.ToString() + "+direction:" + "\r\n" +
-                "-teleports snake to the nearest snake element \n\t in that direction: " + cSettings.tpSelfActovator.ToString() + "+direction" + "\r\n" +
-                 "teleports snake for n tiles in that direction: " + "-n(number)+direction" + "\r\n" +
                 "\r\n\r\n" +
                 "Rules:" + "\r\n" + "1. The snake grows longer by eating food.\r\n" +
                 "2. Avoid eating yourself or hitting the walls.\r\n" +

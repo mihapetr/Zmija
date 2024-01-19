@@ -28,6 +28,7 @@ namespace Zmijica
         public int poisonDamage = 3;
         public int FPS = 4;
         public int reward = 0;
+        public bool aiGame = false;
 
         //random foodthings
         public int randomPositiveDuration = 10;
@@ -51,6 +52,7 @@ namespace Zmijica
             randomInterval = 5;
             score = 1;
             reward = 100;
+            aiGame = true;
         }
     }
 
@@ -250,10 +252,20 @@ namespace Zmijica
             {
                 timer1.Stop();
                 varijable.paused = true;
-                HelpScreen hc = new HelpScreen(cSettings);
-                hc.ShowDialog();
-                varijable.paused = false;
-                timer1.Start();
+                if (this.varijable.aiGame)
+                {
+                    HelpScreenAi ai = new HelpScreenAi(cSettings);
+                    ai.ShowDialog();
+                    varijable.paused = false;
+                    timer1.Start();
+                }
+                else
+                {
+                    HelpScreen hc = new HelpScreen(cSettings);
+                    hc.ShowDialog();
+                    varijable.paused = false;
+                    timer1.Start();
+                }
             }
 
             // kretnje
