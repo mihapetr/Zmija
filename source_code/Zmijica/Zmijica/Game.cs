@@ -66,7 +66,12 @@ namespace Zmijica
         /// Kako bismo osigurali funkcionalnost forme, na početku se 
         /// poziva <see cref="GameForm.GameForm"/>.
         /// </summary>
-        public Game(ControlSettings sts) : base(sts) {}   // ovdje se ništa ne upisuje
+        public Game(ControlSettings sts) : base(sts) 
+        {
+            // bilo za debug
+            labelSkipAmount.Hide();
+            pictureBox.Hide();
+        }   // ovdje se ništa ne upisuje
 
         #endregion
 
@@ -108,6 +113,7 @@ namespace Zmijica
 
         public override void Setup() 
         {
+            
             // kontrole se postavljaju ovisno o Options formi
             up = cSettings.up;
             down = cSettings.down;
@@ -236,7 +242,7 @@ namespace Zmijica
                 Close();
             }
 
-            // indikator korisniku da su uključeni aktivatori za specijalne kretnje
+            // indikator korisniku da su uključeni aktivatori za specijalne kretnje (za debug)
             labelSkipAmount.Text = skipAmount.ToString();
             labelSkipAmount.ForeColor = skipN ? Color.Yellow : Color.Black;
             if (tpSelf) pictureBox.BackColor = Color.Green;
