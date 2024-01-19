@@ -74,7 +74,6 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(0, 18);
             this.label1.TabIndex = 22;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // panel1
             // 

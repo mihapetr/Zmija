@@ -170,7 +170,7 @@ namespace Zmijica
             {
                 timer1.Stop();
                 varijable.paused = true;
-                HelpScreen hc = new HelpScreen();
+                HelpScreen hc = new HelpScreen(cSettings);
                 hc.ShowDialog();
                 varijable.paused = false;
                 timer1.Start();

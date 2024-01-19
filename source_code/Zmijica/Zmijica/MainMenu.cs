@@ -91,7 +91,7 @@ namespace Zmijica
 
         private void buttonHelp_Click(object sender, EventArgs e)
         {
-            HelpScreen help = new HelpScreen();
+            HelpScreen help = new HelpScreen(cSettings);
             this.Hide();
             help.ShowDialog();
             this.Show();
