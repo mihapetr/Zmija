@@ -392,12 +392,6 @@ namespace Zmijica
                     foodPosition.Remove(food);
                     // dodajem score increase
                     varijable.score += varijable.reward * snake.Length;
-
-                    if(snake.getPosition().Count() % 5 == 0)
-                    {
-                        varijable.FPS += 5;
-                        FPS = varijable.FPS;
-                    }
                     hasEaten = true;
                     newStandardFood(snakeHeadPosition, snakePosition, snakeAIHeadPosition, snakeAIPosition);
                 }

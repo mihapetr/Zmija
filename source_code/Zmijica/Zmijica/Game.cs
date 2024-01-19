@@ -184,7 +184,7 @@ namespace Zmijica
             {
                 if (food.Item2 == Food.random) randomFood.Insert(0, food.Item1);
             }
-            DrawList(randomFood, Color.Orange);
+            DrawList(randomFood, Color.Blue);
 
             // crtanje zmije
             List<Point> snakePoints = snake.getPosition();
