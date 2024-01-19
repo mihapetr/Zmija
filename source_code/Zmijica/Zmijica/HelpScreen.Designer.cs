@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HelpScreen));
             this.buttonPlay = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -67,9 +66,8 @@
             this.label1.ForeColor = System.Drawing.Color.ForestGreen;
             this.label1.Location = new System.Drawing.Point(96, 35);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(438, 360);
+            this.label1.Size = new System.Drawing.Size(0, 18);
             this.label1.TabIndex = 22;
-            this.label1.Text = resources.GetString("label1.Text");
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // HelpScreen
